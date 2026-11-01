@@ -6,9 +6,7 @@ NagriVanta is a civic issue reporting and resolution platform for Indian cities.
 
 ## Project links
 
-- **Live web app:** [nagrivanta-web.vercel.app](https://nagrivanta-web.vercel.app)
-- **API health:** [nagrivanta-api.vercel.app/health](https://nagrivanta-api.vercel.app/health)
-- **Open data:** [CSV export](https://nagrivanta-api.vercel.app/api/v1/public/open-data.csv)
+- **Vercel web app and API:** Deployment links will be added after this repository's Vercel deployment is verified.
 - **User guide:** [docs/NagriVanta-User-Guide.pdf](docs/NagriVanta-User-Guide.pdf)
 - **Repository:** [github.com/naitik2043/NagriVanta](https://github.com/naitik2043/NagriVanta)
 
