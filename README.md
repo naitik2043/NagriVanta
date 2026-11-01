@@ -141,6 +141,8 @@ The bundled NYC 311 data comes from NYC Open Data. The Indian civic-report datas
 
 The web client and API are configured as separate Vercel projects. Deploy `client/` as a static Vite app and `server/` as the API project. Configure the production environment variables in the hosting provider, including `MONGODB_URI`, `JWT_SECRET`, `CORS_ORIGINS`, and `VITE_API_URL` as applicable. Set `CRON_SECRET` for the scheduled SLA job.
 
+For Gemini, add `GEMINI_API_KEY` as a **Secret** on the API project's **Production** environment in Vercel, then redeploy the API. Keep it server-side; never use a `VITE_` or `NEXT_PUBLIC_` prefix.
+
 Do not expose database credentials, signing secrets, or private API keys in client-side environment variables. Review the Vercel configuration in each project before deployment.
 
 ## Contact
