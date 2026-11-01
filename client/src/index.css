@@ -98,6 +98,7 @@
 
 /* Leaflet: match the app's chrome */
 .leaflet-container { font-family: inherit; background: #e9eef2; }
+.nv-map-dark-tiles .leaflet-tile { filter: invert(1) hue-rotate(180deg) brightness(0.82) contrast(0.9); }
 .dark .leaflet-container { background: #0b1220; }
 .leaflet-control-layers, .leaflet-bar a, .leaflet-control-scale-line { border-radius: 10px !important; }
 .dark .leaflet-control-layers, .dark .leaflet-bar a { background: #111a2e; color: #e2e8f0; border-color: #263352; }
