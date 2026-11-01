@@ -37,5 +37,10 @@
   "devDependencies": {
     "mongodb-memory-server": "^11.3.0",
     "supertest": "^7.3.1"
+  },
+  "overrides": {
+    "@vercel/cli-config": {
+      "zod": "^4.6.7"
+    }
   }
 }
