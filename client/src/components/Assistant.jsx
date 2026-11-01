@@ -38,7 +38,7 @@ export default function Assistant() {
     }
   };
 
-  const useDraft = (draft) => {
+  const handleUseDraft = (draft) => {
     setOpen(false);
     navigate(user?.role === 'citizen' ? '/report' : '/login', { state: { draft, from: '/report' } });
   };
@@ -69,7 +69,7 @@ export default function Assistant() {
                 <div className="mt-2 rounded-lg border border-slate-200 bg-white p-2 text-xs text-slate-700 dark:border-slate-700 dark:bg-ink-900 dark:text-slate-200">
                   <p className="font-semibold">{m.draft.title}</p>
                   <p className="mt-1 capitalize text-slate-500">{m.draft.category}</p>
-                  <button type="button" className="btn-primary mt-2 w-full py-1.5 text-xs" onClick={() => useDraft(m.draft)}>{t('chat.use')}</button>
+                  <button type="button" className="btn-primary mt-2 w-full py-1.5 text-xs" onClick={() => handleUseDraft(m.draft)}>{t('chat.use')}</button>
                 </div>
               )}
               {m.complaintId && <button type="button" className="mt-2 text-xs font-semibold underline" onClick={() => { setOpen(false); navigate(`/complaints/${m.complaintId}`); }}>Open case</button>}
