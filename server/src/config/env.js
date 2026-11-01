@@ -1,4 +1,5 @@
-import 'dotenv/config';
+﻿import 'dotenv/config';
+import { assertProductionSecurityConfig } from './security.js';
 
 const isTest = process.env.NODE_ENV === 'test';
 
@@ -23,3 +24,7 @@ export const env = {
   webhookSecret: process.env.WEBHOOK_SECRET || '',
   slaCheckMinutes: Number(process.env.SLA_CHECK_MINUTES || 5),
 };
+
+
+assertProductionSecurityConfig(env);
+
