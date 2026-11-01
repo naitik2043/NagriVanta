@@ -54,3 +54,29 @@ test('unknown API routes return a structured 404 response', async () => {
   assert.equal(res.body.error.code, 'NOT_FOUND');
   assert.equal(res.body.requestId, res.headers['x-request-id']);
 });
+
+test('OpenAPI JSON endpoint returns the NagriVanta specification', async () => {
+  const res = await request(app).get('/api/openapi.json');
+
+  assert.equal(res.status, 200);
+  assert.equal(res.body.openapi, '3.1.0');
+  assert.equal(res.body.info.title, 'NagriVanta API');
+
+  assert.ok(res.body.paths['/api/v1/auth/login']);
+  assert.ok(res.body.paths['/api/v1/complaints']);
+  assert.ok(res.body.paths['/open311/v2/requests.json']);
+});
+
+test('Swagger UI documentation page is accessible', async () => {
+  const res = await request(app).get('/api/docs/');
+
+  assert.equal(res.status, 200);
+  assert.match(res.text, /swagger-ui/i);
+});
+
+test('Swagger UI stylesheet is served successfully', async () => {
+  const res = await request(app).get('/api/docs/swagger-ui.css');
+
+  assert.equal(res.status, 200);
+  assert.match(res.headers['content-type'], /text\/css/);
+});

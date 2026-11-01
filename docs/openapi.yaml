@@ -7,8 +7,8 @@ info:
     an AI-powered civic issue reporting and resolution platform.
 
 servers:
-  - url: http://localhost:5000
-    description: Local development server
+  - url: /
+    description: Current API host
 
 tags:
   - name: Health
@@ -417,3 +417,4 @@ paths:
       responses:
         '200':
           description: Service request details.
+

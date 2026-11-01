@@ -1,0 +1,420 @@
+﻿openapi: 3.1.0
+info:
+  title: NagriVanta API
+  version: 1.0.0
+  description: |
+    REST API documentation for NagriVanta,
+    an AI-powered civic issue reporting and resolution platform.
+
+servers:
+  - url: /
+    description: Current API host
+
+tags:
+  - name: Health
+  - name: Authentication
+  - name: Public
+  - name: Profile
+  - name: Complaints
+  - name: AI Assistant
+  - name: Administration
+  - name: Open311
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    ApiResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+        requestId:
+          type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+        requestId:
+          type: string
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+
+    RegisterRequest:
+      type: object
+      required:
+        - name
+        - email
+        - password
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+
+  responses:
+    Unauthorized:
+      description: Authentication required or token invalid.
+    Forbidden:
+      description: Insufficient permissions.
+    NotFound:
+      description: Requested resource not found.
+    ValidationError:
+      description: Request validation failed.
+
+paths:
+  /health:
+    get:
+      tags: [Health]
+      summary: Check API health
+      responses:
+        '200':
+          description: API health information.
+
+  /api/v1/auth/register:
+    post:
+      tags: [Authentication]
+      summary: Register a citizen account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Account created.
+        '400':
+          $ref: '#/components/responses/ValidationError'
+
+  /api/v1/auth/login:
+    post:
+      tags: [Authentication]
+      summary: Authenticate a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Authentication successful.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/v1/auth/logout:
+    post:
+      tags: [Authentication]
+      summary: Log out the authenticated user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Logged out successfully.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/v1/auth/me:
+    get:
+      tags: [Authentication]
+      summary: Get current authenticated user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Current user information.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/v1/departments:
+    get:
+      tags: [Public]
+      summary: Get available departments
+      responses:
+        '200':
+          description: Department list.
+
+  /api/v1/cities:
+    get:
+      tags: [Public]
+      summary: Get supported cities
+      responses:
+        '200':
+          description: City list.
+
+  /api/v1/public/scorecard:
+    get:
+      tags: [Public]
+      summary: Get public civic performance scorecard
+      responses:
+        '200':
+          description: Aggregated public scorecard.
+
+  /api/v1/public/risk-alerts:
+    get:
+      tags: [Public]
+      summary: Get public civic risk alerts
+      responses:
+        '200':
+          description: Public risk alerts.
+
+  /api/v1/public/track/{ref}:
+    get:
+      tags: [Public]
+      summary: Track a complaint using its reference ID
+      parameters:
+        - name: ref
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Public complaint tracking milestones.
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/v1/profile:
+    get:
+      tags: [Profile]
+      summary: Get authenticated user profile
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User profile.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    patch:
+      tags: [Profile]
+      summary: Update user profile
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Profile updated.
+
+  /api/v1/profile/password:
+    post:
+      tags: [Profile]
+      summary: Change account password
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Password changed.
+
+  /api/v1/complaints:
+    get:
+      tags: [Complaints]
+      summary: List complaints
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Complaint collection.
+    post:
+      tags: [Complaints]
+      summary: Submit a civic complaint
+      description: Supports multipart form data with image and video uploads.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                videos:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: Complaint submitted.
+
+  /api/v1/complaints/mine:
+    get:
+      tags: [Complaints]
+      summary: Get complaints submitted by current user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User complaint history.
+
+  /api/v1/complaints/nearby:
+    get:
+      tags: [Complaints]
+      summary: Get nearby complaints
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Nearby complaint collection.
+
+  /api/v1/complaints/{id}:
+    get:
+      tags: [Complaints]
+      summary: Get complaint details
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Complaint details.
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/v1/complaints/{id}/status:
+    patch:
+      tags: [Complaints]
+      summary: Update complaint status
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Complaint status updated.
+
+  /api/v1/complaints/{id}/upvote:
+    post:
+      tags: [Complaints]
+      summary: Upvote a complaint
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Vote recorded.
+    delete:
+      tags: [Complaints]
+      summary: Remove complaint upvote
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Vote removed.
+
+  /api/v1/assistant/chat:
+    post:
+      tags: [AI Assistant]
+      summary: Interact with the AI civic assistant
+      responses:
+        '200':
+          description: AI assistant response.
+
+  /api/v1/admin/analytics:
+    get:
+      tags: [Administration]
+      summary: Get administrative analytics
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Civic analytics.
+
+  /api/v1/admin/workload:
+    get:
+      tags: [Administration]
+      summary: Get department workload
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Workload information.
+
+  /open311/v2/services.json:
+    get:
+      tags: [Open311]
+      summary: Get Open311 service definitions
+      responses:
+        '200':
+          description: Available civic services.
+
+  /open311/v2/requests.json:
+    get:
+      tags: [Open311]
+      summary: List Open311 service requests
+      responses:
+        '200':
+          description: Service request collection.
+    post:
+      tags: [Open311]
+      summary: Create an Open311 service request
+      responses:
+        '200':
+          description: Service request created.
+
+  /open311/v2/requests/{id}.json:
+    get:
+      tags: [Open311]
+      summary: Get an Open311 service request
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Service request details.
+

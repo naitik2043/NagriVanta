@@ -1,22 +1,25 @@
-{
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": null,
-  "functions": {
-    "api/index.js": {
-      "includeFiles": "src/ai/**",
-      "maxDuration": 60
-    }
-  },
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/api"
-    }
-  ],
-  "crons": [
-    {
-      "path": "/api/v1/jobs/sla",
-      "schedule": "0 3 * * *"
-    }
-  ]
+﻿{
+    "$schema":  "https://openapi.vercel.sh/vercel.json",
+    "framework":  null,
+    "functions":  {
+                      "api/index.js":  {
+                                           "includeFiles":  [
+                                                                "src/ai/**",
+                                                                "src/config/openapi.yaml"
+                                                            ],
+                                           "maxDuration":  60
+                                       }
+                  },
+    "rewrites":  [
+                     {
+                         "source":  "/(.*)",
+                         "destination":  "/api"
+                     }
+                 ],
+    "crons":  [
+                  {
+                      "path":  "/api/v1/jobs/sla",
+                      "schedule":  "0 3 * * *"
+                  }
+              ]
 }
