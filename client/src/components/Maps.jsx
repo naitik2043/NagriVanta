@@ -14,8 +14,7 @@ const CAT_COLOR = { road: '#ea580c', garbage: '#65a30d', water: '#0284c7', stree
 const PRIORITY_WEIGHT = { low: 0.4, medium: 0.6, high: 0.85, critical: 1 };
 
 const OSM = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
-const CARTO = `${OSM} &copy; <a href="https://carto.com/attributions">CARTO</a>`;
-// Free tile services; all require attribution, none require an API key.
+// Keyless tile services; attribution is shown in the map controls.
 export const BASEMAPS = {
   streets: { label: 'Streets', url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: OSM, maxZoom: 19 },
   satellite: {
@@ -26,8 +25,8 @@ export const BASEMAPS = {
     maxZoom: 19,
   },
   terrain: { label: 'Terrain', url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', attribution: `${OSM}, SRTM | &copy; <a href="https://opentopomap.org">OpenTopoMap</a>`, maxZoom: 17 },
-  light: { label: 'Light', url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', attribution: CARTO, maxZoom: 20 },
-  dark: { label: 'Dark', url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', attribution: CARTO, maxZoom: 20 },
+  light: { label: 'Light', url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', attribution: 'Tiles &copy; Esri', maxZoom: 19 },
+  dark: { label: 'Dark', url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: OSM, maxZoom: 19, tileClassName: 'nv-map-dark-tiles' },
 };
 const CHOICES = [['auto', 'Default'], ...Object.entries(BASEMAPS).map(([k, v]) => [k, v.label])];
 const IS_MAC = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
@@ -46,7 +45,7 @@ function Tiles({ baseKey }) {
   const b = BASEMAPS[baseKey];
   return (
     <>
-      <TileLayer key={baseKey} url={b.url} attribution={b.attribution} maxZoom={b.maxZoom} maxNativeZoom={b.maxZoom} />
+      <TileLayer key={baseKey} url={b.url} attribution={b.attribution} maxZoom={b.maxZoom} maxNativeZoom={b.maxZoom} className={b.tileClassName} />
       {b.labels && <TileLayer key={`${baseKey}-labels`} url={b.labels} maxZoom={b.maxZoom} />}
     </>
   );
