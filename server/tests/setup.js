@@ -6,3 +6,5 @@ process.env.AUTO_ASSIGN = 'false'; // the lifecycle test walks the manual path; 
 process.env.OPEN311_API_KEYS = 'test-open311-key';
 process.env.CRON_SECRET = 'test-cron-secret';
 process.env.WEBHOOK_URL = '';
+
+process.env.CORS_ORIGINS = 'https://allowed.example';
