@@ -9,6 +9,7 @@ NagriVanta is a civic issue reporting and resolution platform for Indian cities.
 - **Web app:** [nagrivanta-web-topaz.vercel.app](https://nagrivanta-web-topaz.vercel.app/)
 - **API:** [nagrivanta-api-iota.vercel.app](https://nagrivanta-api-iota.vercel.app/)
 - **API health:** [Health check](https://nagrivanta-api-iota.vercel.app/health)
+- **API documentation:** [Swagger UI](https://nagrivanta-api-iota.vercel.app/api/docs) · [OpenAPI spec](https://nagrivanta-api-iota.vercel.app/api/openapi.json)
 - **Open311 service catalogue:** [Services](https://nagrivanta-api-iota.vercel.app/open311/v2/services.json)
 - **User guide:** [docs/NagriVanta-User-Guide.pdf](docs/NagriVanta-User-Guide.pdf)
 - **Repository:** [github.com/naitik2043/NagriVanta](https://github.com/naitik2043/NagriVanta)
