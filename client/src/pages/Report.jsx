@@ -151,7 +151,7 @@ export default function Report() {
       const { data } = await api('/complaints', { method: 'POST', body: fd });
       setDone(data);
     } catch (err) {
-      if (err.status === 0) { await queueReport(fields, files); setDone({ offline: true }); } else setError(err);
+      if (err.status === 0 || err.status >= 500) { await queueReport(fields, files, err.idempotencyKey); setDone({ offline: true }); } else setError(err);
     } finally { setBusy(false); }
   };
 

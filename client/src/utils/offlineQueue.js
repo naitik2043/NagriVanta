@@ -24,13 +24,26 @@ async function tx(mode, fn) {
   });
 }
 
-export async function queueReport(fields, files) {
+export async function queueReport(fields, files, idempotencyKey = crypto.randomUUID()) {
   const media = await Promise.all(files.map(async (f) => ({ field: f.field, name: f.file.name, data: await fileToDataUrl(f.file) })));
-  await tx('readwrite', (s) => s.add({ fields, media, queuedAt: Date.now() }));
+  await tx('readwrite', (s) => s.add({ fields, media, idempotencyKey, queuedAt: Date.now() }));
   window.dispatchEvent(new Event('outbox:changed'));
 }
 
 export const queuedCount = () => tx('readonly', (s) => s.count()).catch(() => 0);
+export const listQueued = () => tx('readonly', (s) => s.getAll()).catch(() => []);
+
+export async function removeQueued(id) {
+  await tx('readwrite', (s) => s.delete(id));
+  window.dispatchEvent(new Event('outbox:changed'));
+}
+
+export async function retryQueued(id) {
+  const items = await listQueued();
+  const item = items.find((entry) => entry.id === id);
+  if (item) await tx('readwrite', (s) => s.put({ ...item, failed: false, lastError: undefined, failedAt: undefined }));
+  return flushQueue();
+}
 
 let syncing = false;
 export async function flushQueue() {
@@ -40,17 +53,22 @@ export async function flushQueue() {
   try {
     const items = await tx('readonly', (s) => s.getAll());
     for (const item of items || []) {
+      if (item.failed) continue;
+      if (!item.idempotencyKey) {
+        item.idempotencyKey = crypto.randomUUID();
+        await tx('readwrite', (s) => s.put(item));
+      }
       const fd = new FormData();
       Object.entries(item.fields).forEach(([k, v]) => v !== '' && v != null && fd.append(k, v));
       for (const m of item.media) fd.append(m.field, await dataUrlToFile(m.data, m.name));
       try {
-        await api('/complaints', { method: 'POST', body: fd });
+        await api('/complaints', { method: 'POST', body: fd, headers: { 'Idempotency-Key': item.idempotencyKey } });
         await tx('readwrite', (s) => s.delete(item.id));
         sent += 1;
       } catch (err) {
-        if (err.status === 0) break; // still offline: try again later
-        if (err.status >= 400 && err.status < 500 && err.status !== 401 && err.status !== 429) await tx('readwrite', (s) => s.delete(item.id)); // invalid: drop it
-        else break;
+        if (err.status === 0 || err.status === 401 || err.status === 429 || err.status >= 500) break;
+        // Keep rejected submissions for the citizen to review; never erase a report silently.
+        await tx('readwrite', (s) => s.put({ ...item, failed: true, lastError: err.message, failedAt: Date.now() }));
       }
     }
   } finally {

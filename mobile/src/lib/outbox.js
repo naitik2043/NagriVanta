@@ -7,14 +7,34 @@ const KEY = 'outbox';
 const listeners = new Set();
 export const onOutboxChange = (fn) => { listeners.add(fn); return () => listeners.delete(fn); };
 
-const read = async () => JSON.parse((await AsyncStorage.getItem(KEY)) || '[]');
+const read = async () => {
+  const items = JSON.parse((await AsyncStorage.getItem(KEY)) || '[]');
+  let changed = false;
+  const migrated = items.map((item) => {
+    if (item.id && item.idempotencyKey) return item;
+    changed = true;
+    return {
+      ...item,
+      id: item.id || `${item.queuedAt || Date.now()}-${Math.random().toString(36).slice(2)}`,
+      idempotencyKey: item.idempotencyKey || `${item.queuedAt || Date.now()}-${Math.random().toString(36).slice(2)}`,
+    };
+  });
+  if (changed) await AsyncStorage.setItem(KEY, JSON.stringify(migrated));
+  return migrated;
+};
 const write = async (items) => { await AsyncStorage.setItem(KEY, JSON.stringify(items)); listeners.forEach((fn) => fn(items.length)); };
 
-export async function queueReport(fields, photos) {
-  await write([...(await read()), { fields, photos: photos.map(({ uri, mimeType, fileName }) => ({ uri, mimeType, fileName })), queuedAt: Date.now() }]);
+export async function queueReport(fields, photos, idempotencyKey = `${Date.now()}-${Math.random().toString(36).slice(2)}`) {
+  await write([...(await read()), { id: `${Date.now()}-${Math.random().toString(36).slice(2)}`, fields, photos: photos.map(({ uri, mimeType, fileName }) => ({ uri, mimeType, fileName })), idempotencyKey, queuedAt: Date.now() }]);
 }
 
 export const queuedCount = async () => (await read()).length;
+export const listQueued = read;
+export const removeQueued = async (id) => write((await read()).filter((item) => item.id !== id));
+export async function retryQueued(id) {
+  await write((await read()).map((item) => item.id === id ? { ...item, failed: false, lastError: undefined, failedAt: undefined } : item));
+  return flushOutbox();
+}
 
 let busy = false;
 export async function flushOutbox() {
@@ -25,15 +45,17 @@ export async function flushOutbox() {
     const items = await read();
     const left = [];
     for (const [i, item] of items.entries()) {
+      if (item.failed) { left.push(item); continue; }
       try {
         const fd = new FormData();
         Object.entries(item.fields).forEach(([k, v]) => v !== '' && v != null && fd.append(k, String(v)));
         for (const [j, p] of item.photos.entries()) await appendImage(fd, 'images', p, j);
-        await api('/complaints', { method: 'POST', body: fd });
+        await api('/complaints', { method: 'POST', body: fd, headers: { 'Idempotency-Key': item.idempotencyKey } });
         sent += 1;
       } catch (err) {
-        if (err.network) { left.push(...items.slice(i)); break; } // still offline: keep the rest
-        // a validation error will never succeed; drop it instead of retrying forever
+        if (err.network || err.status === 401 || err.status === 429 || err.status >= 500) { left.push(...items.slice(i)); break; }
+        // Preserve rejected reports so the citizen can review and correct them later.
+        left.push({ ...item, failed: true, lastError: err.message, failedAt: Date.now() });
       }
     }
     await write(left);

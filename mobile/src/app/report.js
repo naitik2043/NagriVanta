@@ -74,8 +74,8 @@ export default function Report() {
       const { data } = await api('/complaints', { method: 'POST', body: fd });
       router.replace(`/complaint/${data._id}`);
     } catch (e) {
-      if (e.network) {
-        await queueReport(fields, photos);
+      if (e.network || e.status >= 500) {
+        await queueReport(fields, photos, e.idempotencyKey);
         setNotice(t('savedOffline'));
         setForm({ title: '', description: '', category: 'auto', ward: '', address: '' });
         setPhotos([]);

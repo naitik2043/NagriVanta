@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router';
 import { WifiOff } from 'lucide-react';
 import Assistant from './components/Assistant';
@@ -8,21 +8,22 @@ import { Spinner } from './components/ui';
 import { useAuth } from './context/AuthContext';
 import { usePrefs } from './context/PrefsContext';
 import { flushQueue, queuedCount } from './utils/offlineQueue';
-import Home from './pages/Home';
-import { Login, Register } from './pages/Auth';
-import Report from './pages/Report';
-import MyReports from './pages/MyReports';
-import Community from './pages/Community';
-import ComplaintDetail from './pages/ComplaintDetail';
-import Queue from './pages/Queue';
-import Analytics from './pages/Analytics';
-import Scorecard from './pages/Scorecard';
-import Notifications from './pages/Notifications';
-import Profile from './pages/Profile';
-import Guide from './pages/Guide';
-import About from './pages/About';
-import Faq from './pages/Faq';
-import Track from './pages/Track';
+const Home = lazy(() => import('./pages/Home'));
+const Login = lazy(() => import('./pages/Auth').then((module) => ({ default: module.Login })));
+const Register = lazy(() => import('./pages/Auth').then((module) => ({ default: module.Register })));
+const Report = lazy(() => import('./pages/Report'));
+const MyReports = lazy(() => import('./pages/MyReports'));
+const Community = lazy(() => import('./pages/Community'));
+const ComplaintDetail = lazy(() => import('./pages/ComplaintDetail'));
+const Queue = lazy(() => import('./pages/Queue'));
+const Analytics = lazy(() => import('./pages/Analytics'));
+const Scorecard = lazy(() => import('./pages/Scorecard'));
+const Notifications = lazy(() => import('./pages/Notifications'));
+const Profile = lazy(() => import('./pages/Profile'));
+const Guide = lazy(() => import('./pages/Guide'));
+const About = lazy(() => import('./pages/About'));
+const Faq = lazy(() => import('./pages/Faq'));
+const Track = lazy(() => import('./pages/Track'));
 
 // Sends reports saved while offline as soon as the user is signed in and online.
 function OutboxBanner() {
@@ -57,7 +58,7 @@ function Layout() {
       <OutboxBanner />
       <main id="main" className="mx-auto w-full max-w-7xl flex-1 px-4 py-8">
         {/* keyed by route so each page enters with a short, calm transition */}
-        <div key={pathname} className="animate-page"><Outlet /></div>
+        <div key={pathname} className="animate-page"><Suspense fallback={<Spinner />}><Outlet /></Suspense></div>
       </main>
       <Footer />
       <Assistant />

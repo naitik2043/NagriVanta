@@ -21,21 +21,27 @@ export class ApiError extends Error {
 }
 
 // body may be a plain object (sent as JSON) or FormData (multipart, for photos)
-export async function api(path, { method = 'GET', body, query } = {}) {
+export async function api(path, { method = 'GET', body, query, headers: extraHeaders = {} } = {}) {
   const qs = query ? `?${new URLSearchParams(Object.entries(query).filter(([, v]) => v !== '' && v != null))}` : '';
-  const headers = {};
+  const headers = { ...extraHeaders };
+  if (method === 'POST' && path === '/complaints' && !headers['Idempotency-Key']) headers['Idempotency-Key'] = crypto.randomUUID();
+  const idempotencyKey = headers['Idempotency-Key'];
   if (token) headers.Authorization = `Bearer ${token}`;
   if (body && !(body instanceof FormData)) headers['Content-Type'] = 'application/json';
   let res;
   try {
     res = await fetch(`${BASE}${path}${qs}`, { method, headers, body: body instanceof FormData ? body : body && JSON.stringify(body) });
   } catch {
-    throw new ApiError(0, { message: 'Cannot reach the server. Check your connection or that the API is running.' });
+    const error = new ApiError(0, { message: 'Cannot reach the server. Check your connection or that the API is running.' });
+    error.idempotencyKey = idempotencyKey;
+    throw error;
   }
   const json = await res.json().catch(() => ({}));
   if (!res.ok || json.success === false) {
     if (res.status === 401 && token) { setToken(null); window.dispatchEvent(new Event('auth:expired')); }
-    throw new ApiError(res.status, json.error);
+    const error = new ApiError(res.status, json.error);
+    error.idempotencyKey = idempotencyKey;
+    throw error;
   }
   return { data: json.data, meta: json.meta };
 }
