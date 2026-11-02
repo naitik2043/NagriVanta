@@ -16,6 +16,18 @@ test('HTTP responses include request IDs and security headers', async () => {
   assert.equal(res.body.status, 'ok');
 });
 
+test('liveness is independent of dependencies and readiness reports database status', async () => {
+  const live = await request(app).get('/health/live');
+  assert.equal(live.status, 200);
+  assert.equal(live.body.status, 'ok');
+
+  const ready = await request(app).get('/health/ready');
+  assert.equal(ready.status, 503);
+  assert.equal(ready.body.status, 'not_ready');
+  assert.equal(ready.body.db, 'down');
+  assert.equal(JSON.stringify(ready.body).includes('mongodb://'), false);
+});
+
 test('CORS allows configured frontend origins', async () => {
   const res = await request(app)
     .get('/health')

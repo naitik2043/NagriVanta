@@ -32,6 +32,8 @@ const complaintSchema = new mongoose.Schema({
   },
   source: { type: String, enum: ['web', 'mobile', 'voice', 'chat', 'open311', 'seed'], default: 'web' },
   externalId: { type: String, trim: true, maxlength: 80 }, // id in a partner system (Open311 integrations)
+  idempotencyKey: { type: String, maxlength: 128, select: false },
+  requestFingerprint: { type: String, maxlength: 64, select: false },
   reportedBy: { type: ObjectId, ref: 'User', required: true, index: true },
   departmentId: { type: ObjectId, ref: 'Department', index: true },
   assignedTo: { type: ObjectId, ref: 'User', index: true },
@@ -88,5 +90,9 @@ const complaintSchema = new mongoose.Schema({
 complaintSchema.index({ location: '2dsphere' });
 complaintSchema.index({ createdAt: -1 });
 complaintSchema.index({ city: 1, status: 1, createdAt: -1 });
+complaintSchema.index({ reportedBy: 1, idempotencyKey: 1 }, {
+  unique: true,
+  partialFilterExpression: { idempotencyKey: { $type: 'string' } },
+});
 
 export default mongoose.model('Complaint', complaintSchema);

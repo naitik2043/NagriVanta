@@ -26,7 +26,7 @@ const detectLanguage = (text) => {
 };
 
 // Persist first; AI and routing run afterwards and can never block or undo the save.
-export async function createComplaint(input, user, media = {}) {
+export async function createComplaint(input, user, media = {}, idempotency = {}) {
   const text = `${input.title} ${input.description}`;
   const auto = input.category === 'auto';
   const category = auto ? ruleCategory(text).category : input.category;
@@ -61,6 +61,7 @@ export async function createComplaint(input, user, media = {}) {
     externalId: input.externalId,
     reportedBy: user._id,
     duplicateCandidates: duplicates,
+    ...(idempotency.key && { idempotencyKey: idempotency.key, requestFingerprint: idempotency.fingerprint }),
   });
   await recordHistory(complaint, user, 'created', { toStatus: 'submitted', metadata: media.sha256?.length ? { mediaSha256: media.sha256 } : undefined });
   return complaint;
@@ -180,6 +181,8 @@ export function toCitizenView(c) {
   delete o.duplicateCandidates;
   delete o.priorityScore;
   delete o.imageHashes;
+  delete o.idempotencyKey;
+  delete o.requestFingerprint;
   delete o.routing;
   if (o.aiAnalysis) delete o.aiAnalysis.error;
   // staff contact details are not for citizens

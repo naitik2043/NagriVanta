@@ -42,7 +42,7 @@ before(async () => {
 
 after(async () => {
   await mongoose.disconnect();
-  await mongo.stop();
+  if (mongo) await mongo.stop();
 });
 
 test('register, login, me; bad credentials rejected; role cannot be self-assigned', async () => {
@@ -56,6 +56,24 @@ test('register, login, me; bad credentials rejected; role cannot be self-assigne
   const me = await request(app).get('/api/v1/auth/me').set('Authorization', `Bearer ${reg.body.data.token}`);
   assert.equal(me.body.data.user.email, 'new@example.com');
   assert.equal((await request(app).get('/api/v1/auth/me')).status, 401);
+});
+
+test('complaint idempotency replays the first result and rejects key reuse with changed data', async () => {
+  const key = 'offline-report-test-0001';
+  const submit = (title) => request(app).post('/api/v1/complaints').set(as('c1')).set('Idempotency-Key', key)
+    .field('title', title).field('description', 'Water is leaking from the pipe beside the public park.')
+    .field('category', 'water').field('lat', '28.6461').field('lng', '77.3696').field('ward', 'Indirapuram');
+
+  const first = await submit('Water leak near public park');
+  assert.equal(first.status, 201, JSON.stringify(first.body));
+  const replay = await submit('Water leak near public park');
+  assert.equal(replay.status, 201, JSON.stringify(replay.body));
+  assert.equal(replay.body.data._id, first.body.data._id);
+  assert.equal(replay.body.data.requestFingerprint, undefined);
+
+  const changed = await submit('Different issue beside public park');
+  assert.equal(changed.status, 409);
+  assert.equal(await Complaint.countDocuments({ reportedBy: (await Complaint.findById(first.body.data._id)).reportedBy }), 1);
 });
 
 test('full lifecycle: citizen -> admin -> officer -> verified resolve -> reopen -> fresh proof required', async () => {

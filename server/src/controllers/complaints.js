@@ -1,4 +1,5 @@
 import Complaint from '../models/Complaint.js';
+import { createHash } from 'node:crypto';
 import ComplaintHistory from '../models/ComplaintHistory.js';
 import Department from '../models/Department.js';
 import Feedback from '../models/Feedback.js';
@@ -37,11 +38,37 @@ async function loadForUser(id, user) {
 
 export async function create(req, res) {
   const input = createComplaintSchema.parse(req.body);
+  const key = req.get('Idempotency-Key')?.trim();
+  if (key && (key.length < 8 || key.length > 128 || !/^[\w.:=-]+$/.test(key))) {
+    throw badRequest('Idempotency-Key must be 8–128 letters, digits, or . _ : = - characters');
+  }
+  const fingerprint = key ? createHash('sha256').update(JSON.stringify({
+    input,
+    files: (req.files?.images || []).concat(req.files?.videos || []).map((file) => createHash('sha256').update(file.buffer).digest('hex')),
+  })).digest('hex') : undefined;
+  if (key) {
+    const prior = await Complaint.findOne({ reportedBy: req.user._id, idempotencyKey: key }).select('+requestFingerprint');
+    if (prior) {
+      if (prior.requestFingerprint !== fingerprint) throw conflict('This Idempotency-Key was already used with different complaint data');
+      return ok(res, toCitizenView(prior), null, 201);
+    }
+  }
   const media = await saveMedia(req);
   if ((input.lat == null || input.lng == null) && media.exif?.lat == null) {
     throw badRequest('Location is required: share your location, pick it on the map, or attach a photo with GPS');
   }
-  const complaint = await createComplaint(input, req.user, media);
+  let complaint;
+  try {
+    complaint = await createComplaint(input, req.user, media, { key, fingerprint });
+  } catch (err) {
+    // The unique index is the atomic guard when simultaneous retries race.
+    if (key && err.code === 11000) {
+      const prior = await Complaint.findOne({ reportedBy: req.user._id, idempotencyKey: key }).select('+requestFingerprint');
+      if (prior?.requestFingerprint === fingerprint) return ok(res, toCitizenView(prior), null, 201);
+      if (prior) throw conflict('This Idempotency-Key was already used with different complaint data');
+    }
+    throw err;
+  }
   // awaited (not fire-and-forget) because serverless hosts may freeze the function after responding
   const processed = await processNewComplaint(complaint._id);
   ok(res, toCitizenView(processed), null, 201);
