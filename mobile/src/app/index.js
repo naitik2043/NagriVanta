@@ -33,11 +33,11 @@ export default function Index() {
         <Button title={busy ? 'Please wait…' : mode === 'login' ? 'Sign in' : 'Create account'} onPress={submit} disabled={busy} />
         <Button variant="secondary" title={mode === 'login' ? 'New here? Create an account' : 'Have an account? Sign in'} onPress={() => { setMode(mode === 'login' ? 'register' : 'login'); setError(null); }} />
       </Card>
-      <Card>
-        <T bold size={13}>Demo accounts (after seeding the server)</T>
+      {__DEV__ && <Card>
+        <T bold size={13}>Local demo accounts (after seeding the server)</T>
         <T muted size={13}>citizen1@nagrivanta.local · pwd.officer@nagrivanta.local{'\n'}Password: Demo@12345</T>
         <T muted size={12}>Admin triage and analytics are on the web app.</T>
-      </Card>
+      </Card>}
     </Screen>
   );
 }

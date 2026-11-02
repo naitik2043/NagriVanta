@@ -50,16 +50,18 @@ export function Login() {
         <button className="btn-primary w-full" disabled={busy}>{busy ? 'Signing in…' : 'Sign in'}</button>
       </form>
       <p className="mt-4 text-center text-sm">New here? <Link to="/register" className="font-semibold text-brand-700 dark:text-brand-500">Create an account</Link></p>
-      <details className="mt-6 rounded-lg bg-slate-50 p-3 text-xs text-slate-600 dark:bg-ink-800 dark:text-slate-300">
-        <summary className="cursor-pointer font-semibold">Demo accounts (after running the seed)</summary>
-        <p className="mt-2">Password for all: <code>Demo@12345</code></p>
-        <ul className="mt-1 space-y-0.5">
-          <li>Admin: admin@nagrivanta.local</li>
-          <li>Officer (Ghaziabad): pwd.officer@nagrivanta.local (also san, jal, ele, drn)</li>
-          <li>Officer (Noida): noida.pwd.officer@nagrivanta.local</li>
-          <li>Citizen: citizen1@nagrivanta.local</li>
-        </ul>
-      </details>
+      {import.meta.env.DEV && (
+        <details className="mt-6 rounded-lg bg-slate-50 p-3 text-xs text-slate-600 dark:bg-ink-800 dark:text-slate-300">
+          <summary className="cursor-pointer font-semibold">Local demo accounts (after running the seed)</summary>
+          <p className="mt-2">Password for all: <code>Demo@12345</code></p>
+          <ul className="mt-1 space-y-0.5">
+            <li>Admin: admin@nagrivanta.local</li>
+            <li>Officer (Ghaziabad): pwd.officer@nagrivanta.local (also san, jal, ele, drn)</li>
+            <li>Officer (Noida): noida.pwd.officer@nagrivanta.local</li>
+            <li>Citizen: citizen1@nagrivanta.local</li>
+          </ul>
+        </details>
+      )}
     </AuthCard>
   );
 }
