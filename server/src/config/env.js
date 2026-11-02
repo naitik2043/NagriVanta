@@ -16,7 +16,6 @@ export const env = {
   geminiFallbackModel: process.env.GEMINI_FALLBACK_MODEL ?? 'gemini-flash-latest',
   aiTimeoutMs: Number(process.env.AI_TIMEOUT_MS || 25000), // background calls; see services/background.js
   cronSecret: process.env.CRON_SECRET || '',
-  staffBootstrapToken: process.env.STAFF_BOOTSTRAP_TOKEN || '',
   autoAssign: process.env.AUTO_ASSIGN !== 'false',
   tzOffset: process.env.APP_TZ_OFFSET || '+05:30', // date-only filters are read in this time zone
   weatherEnabled: process.env.RISK_WEATHER !== 'off',
