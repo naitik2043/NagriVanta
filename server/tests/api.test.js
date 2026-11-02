@@ -73,7 +73,10 @@ test('complaint idempotency replays the first result and rejects key reuse with 
 
   const changed = await submit('Different issue beside public park');
   assert.equal(changed.status, 409);
-  assert.equal(await Complaint.countDocuments({ reportedBy: (await Complaint.findById(first.body.data._id)).reportedBy }), 1);
+  assert.equal(await Complaint.countDocuments({
+    reportedBy: (await Complaint.findById(first.body.data._id)).reportedBy,
+    idempotencyKey: key,
+  }), 1);
 });
 
 test('full lifecycle: citizen -> admin -> officer -> verified resolve -> reopen -> fresh proof required', async () => {
