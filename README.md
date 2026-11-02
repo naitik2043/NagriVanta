@@ -1,178 +1,377 @@
 # NagriVanta
 
-NagriVanta is a civic issue reporting and resolution platform for Indian cities. It helps residents report local problems, helps municipal teams triage and resolve them, and gives communities transparent progress updates.
+**AI-assisted civic issue reporting, resolution tracking, and public accountability for Indian cities.**
 
-**AI recommends. Rules validate. People decide.** Reports receive an immediate result from the built-in classifier and routing rules. Optional Gemini analysis can refine the suggestion in the background; authorised staff remain responsible for decisions.
+NagriVanta is a multi-channel civic issue management platform designed for an independent pilot covering **Ghaziabad and Noida, Uttar Pradesh**. It connects residents with municipal teams through a transparent workflow: citizens submit local problems, the platform helps classify and route them, officers manage resolution, and residents can follow progress with a reference ID.
 
-## Project links
+> **AI recommends. Rules validate. People decide.**
+>
+> AI-generated categories, priorities, duplicate matches, and evidence checks are decision-support signals. Authorised staff remain responsible for operational decisions.
 
-- **Web app:** [nagrivanta-web-topaz.vercel.app](https://nagrivanta-web-topaz.vercel.app/)
-- **API:** [nagrivanta-api-iota.vercel.app](https://nagrivanta-api-iota.vercel.app/)
-- **API health:** [Health check](https://nagrivanta-api-iota.vercel.app/health)
-- **API documentation:** [Swagger UI](https://nagrivanta-api-iota.vercel.app/api/docs) · [OpenAPI spec](https://nagrivanta-api-iota.vercel.app/api/openapi.json)
-- **Open311 service catalogue:** [Services](https://nagrivanta-api-iota.vercel.app/open311/v2/services.json)
-- **User guide:** [docs/NagriVanta-User-Guide.pdf](docs/NagriVanta-User-Guide.pdf)
-- **Repository:** [github.com/naitik2043/NagriVanta](https://github.com/naitik2043/NagriVanta)
+<p align="center">
+  <a href="https://nagrivanta-web-topaz.vercel.app/"><strong>Open Web App</strong></a> ·
+  <a href="https://nagrivanta-api-iota.vercel.app/api/docs"><strong>API Documentation</strong></a> ·
+  <a href="docs/NagriVanta-User-Guide.pdf"><strong>User Guide</strong></a>
+</p>
 
-The demo is an independent pilot for Ghaziabad and Noida. Its sample data is synthetic; it is not an official government service or emergency service.
+## Project at a glance
 
-## What it does
-
-- Submit civic reports with text, voice, location, photos, or short video.
-- Classify and prioritise reports, identify possible duplicates, and route cases to municipal departments.
-- Track case status, notifications, service-level deadlines, and an auditable history.
-- Require resolution evidence and support resident feedback, ratings, and reopening.
-- Provide role-based workflows for residents, officers, and administrators.
-- Explore maps, ward analytics, public scorecards, and anonymised open data.
-- Support English and Hindi, installable web/PWA use, and an offline submission queue.
-- Offer a companion mobile app built with Expo and React Native.
-- Expose an Open311 GeoReport v2-compatible API and signed outbound webhooks.
-
-## Technology
-
-| Component | Technologies |
+| Area | Details |
 |---|---|
-| Web client (`client/`) | React 19, Vite, Tailwind CSS, React Router, Leaflet, Recharts |
-| API (`server/`) | Node.js 20+, Express 5, MongoDB/Mongoose, Zod, JWT |
-| AI and media | JavaScript Naive Bayes classifier, optional Google Gemini, Sharp, Exifr |
-| Mobile (`mobile/`) | Expo SDK 58, React Native, Expo Router |
-| Hosting | Vercel (separate web and API deployments) |
+| Project type | Full-stack civic-tech platform |
+| Web application | React 19 + Vite + Tailwind CSS |
+| Backend | Node.js + Express 5 |
+| Database | MongoDB + Mongoose |
+| AI | Offline Naive Bayes and explainable rules, with optional Google Gemini |
+| Mobile application | Expo + React Native |
+| Deployment | Separate Vercel deployments for web and API |
+| Pilot coverage | Ghaziabad and Noida |
+| Interface languages | English and Hindi |
 
-## Run locally
+## Live project
 
-### Requirements
+| Resource | Link |
+|---|---|
+| Web application | [NagriVanta Web](https://nagrivanta-web-topaz.vercel.app/) |
+| Backend API | [NagriVanta API](https://nagrivanta-api-iota.vercel.app/) |
+| API health | [Health endpoint](https://nagrivanta-api-iota.vercel.app/health) |
+| Swagger documentation | [API Docs](https://nagrivanta-api-iota.vercel.app/api/docs) |
+| OpenAPI specification | [OpenAPI JSON](https://nagrivanta-api-iota.vercel.app/api/openapi.json) |
+| Open311 catalogue | [Service catalogue](https://nagrivanta-api-iota.vercel.app/open311/v2/services.json) |
+| User guide | [NagriVanta User Guide](docs/NagriVanta-User-Guide.pdf) |
 
-- Node.js 20 or newer and npm
-- For the quick demo, no MongoDB installation is needed.
-- For persistent local development, a MongoDB instance and connection URI are required.
+The application is an independent pilot, not an official government portal or emergency-response service. Demo records are synthetic unless explicitly identified otherwise.
 
-### Quick demo
+## The problem
 
-In one terminal:
+Residents often have no single, clear way to report everyday civic problems, identify the responsible department, and follow a complaint until it is resolved. On the administration side, reports can be difficult to categorise, prioritise, assign, and monitor consistently.
 
-```powershell
+NagriVanta brings these activities into one workflow. It aims to make civic reporting easier for residents and case management more traceable for municipal teams.
+
+## Core capabilities
+
+### 1. Multi-channel issue reporting
+- Submit issues through the web application or companion mobile app.
+- Describe an issue using text or voice input.
+- Attach photos and a short video.
+- Pin the issue on a map, use device location, or use location metadata from a photo.
+- Look up an area using an Indian PIN code.
+- Use the Open311-compatible API as an integration channel.
+
+### 2. AI-assisted classification and prioritisation
+- Classify reports into categories such as roads, garbage, water, streetlights, drainage, and other.
+- Generate a short report summary and priority suggestion.
+- Understand English, Hindi, and common Hinglish descriptions through the local classifier and rules.
+- Use the offline Naive Bayes model and keyword rules when Gemini is not configured or unavailable.
+- Optionally use Google Gemini for richer text and photo analysis.
+
+AI output is advisory. It does not independently approve, reject, or resolve a complaint.
+
+### 3. Duplicate detection and smart routing
+- Identify potentially related reports using text similarity, geographic distance, category, and image perceptual hashes.
+- Suggest the department responsible for a report.
+- When the category is sufficiently reliable and automatic assignment is enabled, route the case to the least-loaded eligible officer.
+- Leave uncertain cases for staff review instead of blindly assigning them.
+
+### 4. Case tracking and service-level deadlines
+- Give each submitted report a unique reference ID.
+- Show status milestones and a case timeline.
+- Notify residents about important status changes.
+- Calculate target dates using department and priority-based SLA settings.
+- Provide overdue-case filters and escalation workflows.
+
+### 5. Resolution evidence and accountability
+- Require a resolution note and a fresh after-photo before a case can be marked resolved.
+- Check available image hashes, upload reuse, photo capture time, and GPS proximity.
+- Optionally request an AI visual comparison of before-and-after photos.
+- Record status changes in a SHA-256 hash-linked complaint history.
+- Allow resident feedback, ratings, and reopening of eligible cases.
+
+Evidence checks are supporting signals for review; they are not an infallible proof that physical work was completed.
+
+### 6. Community participation
+- Browse nearby civic reports.
+- Support an existing report using a “Me too” vote.
+- Use community support as one input to prioritisation.
+- Share a public tracking link without exposing the reporter's private details.
+
+### 7. Analytics and public transparency
+- Review reports by status, category, ward, time period, and intake channel.
+- View officer workload and overdue cases.
+- Explore recurring issue hotspots on maps.
+- Display rule-based risk alerts using weather forecasts and complaint history.
+- Publish aggregate ward scorecards and open data in CSV/JSON formats.
+- Suppress small groups and round public locations to reduce privacy risks.
+
+### 8. Accessibility and low-connectivity support
+- English and Hindi interface.
+- Installable Progressive Web App (PWA).
+- Offline app-shell caching and a queued report outbox that syncs when connectivity returns.
+- Lite mode to reduce data usage and avoid map-tile loading.
+- Responsive web interface and a companion React Native application.
+
+## User roles
+
+| Role | Main responsibilities |
+|---|---|
+| Resident | Create reports, attach evidence, track cases, support nearby reports, and provide feedback |
+| Officer | View assigned or departmental cases, update statuses, add notes, and submit resolution evidence |
+| Administrator | Review AI suggestions, manage assignments and staff, configure department SLAs, and inspect analytics |
+
+Access control is enforced by the API; hiding a page in the web interface is not treated as a security boundary.
+
+## Technology stack
+
+| Layer | Technology | Purpose |
+|---|---|---|
+| Web frontend | React 19 | Component-based user interface |
+| Build tooling | Vite 8 | Development server and production bundling |
+| Styling | Tailwind CSS v4 | Responsive utility-first styling |
+| Routing | React Router | Client-side page navigation and role-aware layouts |
+| Maps | Leaflet, React Leaflet | Interactive issue maps, pins, clusters, and heat layers |
+| Charts | Recharts | Operational and ward-level visualisations |
+| Icons | Lucide React | Consistent interface icons |
+| Backend runtime | Node.js 20+ | JavaScript server runtime |
+| API framework | Express 5 | REST API and request routing |
+| Database | MongoDB + Mongoose 9 | Persistent users, complaints, workflow, and supporting records |
+| Validation | Zod 4 | Request and AI-output validation |
+| Authentication | JWT + bcryptjs | Token-based authentication and password hashing |
+| Upload processing | Multer + Sharp | File handling and image processing |
+| Image metadata | Exifr | Extract available photo time and GPS metadata |
+| AI integration | Google Gemini via `@google/genai` | Optional text and image analysis |
+| Offline AI | JavaScript Naive Bayes + keyword rules | Local classification when external AI is unavailable |
+| Mobile | Expo SDK 58 + React Native | Companion mobile application |
+| API contract | OpenAPI / Swagger UI | API documentation and exploration |
+| Interoperability | Open311 GeoReport v2-compatible endpoints | Standardised civic-service integration |
+| Hosting | Vercel | Web and serverless API deployment |
+| CI | GitHub Actions | Frontend lint/build, backend tests, and Expo web export |
+
+## Architecture
+
+The repository is organised as a small monorepo with separate web, API, and mobile applications.
+
+```text
+NagriVanta/
+├── client/                 # React web application
+│   ├── public/             # PWA manifest, icons, service worker
+│   └── src/
+│       ├── components/     # Shared UI, maps, charts, assistant
+│       ├── context/        # Authentication, preferences, theme
+│       ├── hooks/          # Motion and speech hooks
+│       ├── pages/          # Reporting, tracking, queue, analytics, etc.
+│       ├── services/       # API client
+│       └── utils/          # Formatting, media, offline queue
+├── server/                 # Express API
+│   ├── api/                # Vercel serverless entry point
+│   ├── scripts/            # Demo seed, model training, evaluation
+│   ├── src/
+│   │   ├── ai/             # Trained offline model
+│   │   ├── config/         # Environment, database, constants, OpenAPI
+│   │   ├── controllers/    # HTTP request handlers
+│   │   ├── jobs/           # SLA background job
+│   │   ├── middleware/     # Authentication, uploads, errors
+│   │   ├── models/         # Mongoose schemas
+│   │   ├── routes/         # API routes
+│   │   ├── services/       # AI, routing, workflow, analytics, etc.
+│   │   └── validators/     # Zod schemas
+│   └── tests/              # API, unit, and security tests
+├── mobile/                 # Expo / React Native app
+├── data/                   # Evaluation and demo datasets
+└── docs/                   # User guide and project documentation
+```
+
+### Typical complaint lifecycle
+
+1. A resident submits a report with a description and location.
+2. The API validates the request and stores the complaint.
+3. Local classification and rules provide an immediate category and priority suggestion.
+4. Optional Gemini analysis can refine the suggestion in the background.
+5. Duplicate detection and department routing support staff triage.
+6. An eligible case is assigned, receives a target date, and enters the officer workflow.
+7. The officer updates progress and provides a resolution note with a fresh after-photo.
+8. Evidence checks and the audit history are stored with the case.
+9. The resident follows the public milestones and can provide feedback.
+
+## Local setup
+
+### Prerequisites
+- Node.js 20 or newer
+- npm
+- MongoDB for persistent local development
+
+The quick demo uses an in-memory MongoDB server, so a local MongoDB installation is not required for that mode.
+
+### 1. Start the API demo
+
+Open a terminal:
+
+```bash
 cd server
 npm install
 npm run demo
 ```
 
-This starts the API at `http://localhost:5000` with an in-memory database and seeded sample accounts. All data is discarded when the process stops.
+The API starts at `http://localhost:5000`. The in-memory database is seeded with sample accounts and data. Demo data is discarded when the process stops.
 
-In a second terminal:
+### 2. Start the web application
 
-```powershell
+Open another terminal:
+
+```bash
 cd client
 npm install
 npm run dev
 ```
 
-Open `http://localhost:5173`. The Vite development server proxies API requests to the local server.
+Open [http://localhost:5173](http://localhost:5173). During development, Vite proxies API requests to the local backend.
 
-Demo accounts use the password `Demo@12345`:
+### Local demo accounts
+
+All demo accounts use the password `Demo@12345`.
 
 | Role | Email |
 |---|---|
 | Administrator | `admin@nagrivanta.local` |
 | Resident | `citizen1@nagrivanta.local` |
-| Officer (Ghaziabad) | `pwd.officer@nagrivanta.local` |
-| Officer (Noida) | `noida.pwd.officer@nagrivanta.local` |
+| Officer — Ghaziabad | `pwd.officer@nagrivanta.local` |
+| Officer — Noida | `noida.pwd.officer@nagrivanta.local` |
 
-These credentials are for the disposable local demo only. Never use them for a shared or production deployment.
+These accounts are strictly for the disposable local demo. Do not reuse these credentials in a shared or production environment.
 
-### Persistent API setup
+### 3. Configure a persistent backend (optional)
 
-Copy `server/.env.example` to `server/.env`, set `MONGODB_URI` and a strong `JWT_SECRET`, then install and start the API:
+Create a local environment file:
+
+```bash
+cp server/.env.example server/.env
+```
+
+On Windows PowerShell:
 
 ```powershell
+Copy-Item server/.env.example server/.env
+```
+
+Set at least:
+- `MONGODB_URI`: your MongoDB connection string.
+- `JWT_SECRET`: a long, random signing secret.
+
+Then run:
+
+```bash
 cd server
 npm install
-npm run seed
 npm run dev
 ```
 
-**Warning:** `npm run seed` recreates the NagriVanta database collections. Do not run it against a database containing data you need to keep.
+To populate a persistent development database, use `npm run seed` only after checking its script and confirming the target database can safely be recreated. **Do not run the seed script against data you need to keep.**
 
-The web app can use the local API through the development proxy. To point it elsewhere, copy `client/.env.example` to `client/.env` and set `VITE_API_URL`.
+### 4. Configure the web client
 
-### Optional integrations
+For a separately hosted API, copy `client/.env.example` to `client/.env` and set:
 
-| Variable | Purpose |
-|---|---|
-| `GEMINI_API_KEY` | Enables background Gemini text/photo analysis. The offline classifier works without it. |
-| `GEMINI_MODEL`, `GEMINI_FALLBACK_MODEL` | Configure the primary and fallback Gemini models. |
-| `CORS_ORIGINS` | Comma-separated browser origins permitted to call the API. |
-| `SEED_PASSWORD` | Sets the password used for seeded accounts on a persistent database. |
-| `CRON_SECRET` | Protects the scheduled SLA endpoint in a deployment. |
-| `OPEN311_API_KEYS` | Comma-separated partner API keys for creating Open311 requests. |
-| `WEBHOOK_URL`, `WEBHOOK_SECRET` | Configure signed outbound case-event webhooks. |
-| `AUTO_ASSIGN`, `RISK_WEATHER`, `APP_TZ_OFFSET` | Configure routing, weather-based risk alerts, and the application time zone. |
+```env
+VITE_API_URL=https://your-api-domain.example
+```
 
-See `server/.env.example`, `client/.env.example`, and `mobile/.env.example` for the complete settings and examples. Keep `.env` files and all credentials out of version control.
+Keep private credentials on the server. Never expose database credentials, JWT secrets, Gemini keys, or webhook secrets through client-side variables.
 
-## Mobile app
+### 5. Run the mobile app
 
-Copy `mobile/.env.example` to `mobile/.env` and set `EXPO_PUBLIC_API_URL` to the API address reachable from the device. For a physical phone, use your computer's LAN IP rather than `localhost`.
+Set `EXPO_PUBLIC_API_URL` in `mobile/.env` to an API URL reachable from your phone. A physical device generally needs your computer's LAN IP address rather than `localhost`.
 
-```powershell
+```bash
 cd mobile
 npm install
 npx expo start
 ```
 
-Use Expo Go to open the app during development. Android emulator users can typically reach the host machine at `http://10.0.2.2:5000`.
+## Environment configuration
 
-## Tests and data
+The example files contain the full variable list and development notes.
 
-From `server/`:
+| Variable | Purpose |
+|---|---|
+| `MONGODB_URI` | MongoDB connection |
+| `JWT_SECRET`, `JWT_EXPIRES_IN` | Authentication token signing and expiry |
+| `CORS_ORIGINS` | Allowed browser origins |
+| `GEMINI_API_KEY` | Optional Gemini integration |
+| `GEMINI_MODEL`, `GEMINI_FALLBACK_MODEL` | Primary and fallback AI models |
+| `AI_TIMEOUT_MS` | AI request timeout |
+| `AUTO_ASSIGN` | Enables or disables eligible automatic assignments |
+| `CRON_SECRET` | Protects the scheduled SLA endpoint |
+| `SLA_CHECK_MINUTES` | SLA checking interval configuration |
+| `OPEN311_API_KEYS` | API keys for Open311 partner access |
+| `WEBHOOK_URL`, `WEBHOOK_SECRET` | Outbound event webhook and HMAC signing secret |
+| `RISK_WEATHER` | Enables weather-assisted risk signals |
+| `APP_TZ_OFFSET` | Application timezone offset |
+| `SEED_PASSWORD` | Password for accounts created by the persistent seed script |
+| `VITE_API_URL` | API origin used by the web client |
+| `EXPO_PUBLIC_API_URL` | API origin reachable by the mobile app |
 
-```powershell
+Do not commit real `.env` files or credentials.
+
+## Tests and model evaluation
+
+Run backend tests:
+
+```bash
+cd server
 npm test
+```
+
+Evaluate the bundled offline classifier:
+
+```bash
 npm run eval
+```
+
+Regenerate the local classifier from the configured training data:
+
+```bash
 npm run train
 ```
 
-- `npm test` runs the API and unit test suites.
-- `npm run eval` evaluates the offline classifier against held-out sample data.
-- `npm run train` regenerates `server/src/ai/model.json`.
+The repository includes a GitHub Actions workflow that runs frontend linting and production build, backend tests, and an Expo web export for the mobile project.
 
-The bundled NYC 311 data comes from NYC Open Data. The Indian civic-report dataset is synthetic and intended for demos and evaluation. See [data/README.md](data/README.md) for sources, licences, and dataset limitations. Results from sample datasets should not be presented as real-world performance.
+### Dataset notes
+
+- The NYC 311 sample is sourced from NYC Open Data and is used for classifier evaluation and sample analytics.
+- The Indian civic report dataset is synthetic and is used for demonstration and evaluation.
+- Synthetic sample records and test-set metrics must not be presented as actual deployment outcomes or evidence of real-world model accuracy.
+
+See [data/README.md](data/README.md) for dataset provenance, licences, and limitations.
 
 ## Deployment
 
-The web client and API are configured as separate Vercel projects. Deploy `client/` as a static Vite app and `server/` as the API project. Configure the production environment variables in the hosting provider, including `MONGODB_URI`, `JWT_SECRET`, `CORS_ORIGINS`, and `VITE_API_URL` as applicable. Set `CRON_SECRET` for the scheduled SLA job.
+The web client and API are deployed as separate Vercel projects.
 
-For Gemini, add `GEMINI_API_KEY` as a **Secret** on the API project's **Production** environment in Vercel, then redeploy the API. Keep it server-side; never use a `VITE_` or `NEXT_PUBLIC_` prefix.
+At a high level:
+1. Deploy `client/` as a Vite static application.
+2. Deploy `server/` using the included Vercel serverless entry point and configuration.
+3. Configure production environment variables in the relevant Vercel project.
+4. Set the production API origin in `VITE_API_URL`.
+5. Configure database access, allowed CORS origins, JWT signing, and the SLA cron secret.
+6. Add `GEMINI_API_KEY` only to the API project's server-side environment when enabling Gemini.
 
-Do not expose database credentials, signing secrets, or private API keys in client-side environment variables. Review the Vercel configuration in each project before deployment.
+Check the deployment-specific configuration and Vercel project settings before deploying. The values in this README and the example files are not substitutes for checking the actual production environment.
 
-## Contact
+## Important limitations
 
-NagriVanta is maintained by **Naitik Gupta**.
+- NagriVanta is an independent pilot and is not connected to or endorsed by a municipal authority.
+- It is not an emergency service. Contact the appropriate emergency services for immediate danger.
+- AI outputs and automated checks can be wrong and require human oversight.
+- Some public/demo records and the India-specific labelled dataset are synthetic.
+- The companion mobile app is part of the repository; its availability on app stores or verification on physical devices should not be assumed.
 
-- **GitHub:** [github.com/naitik2043](https://github.com/naitik2043)
-- **Portfolio:** [naitikgupta.vercel.app](https://naitikgupta.vercel.app/)
-- **Email:** [naitikgupta2043@gmail.com](mailto:naitikgupta2043@gmail.com)
+## Maintainer
+
+**Naitik Gupta**
+
+- GitHub: [@naitik2043](https://github.com/naitik2043)
+- Portfolio: [naitikgupta.vercel.app](https://naitikgupta.vercel.app/)
+- Email: [naitikgupta2043@gmail.com](mailto:naitikgupta2043@gmail.com)
 
 ## License
 
-This project is licensed under the MIT License.
-
-Copyright (c) 2026 Naitik Gupta
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
