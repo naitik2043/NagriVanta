@@ -4,6 +4,7 @@ import { env } from '../config/env.js';
 import { optionalAuth, requireAuth, requireRole } from '../middleware/auth.js';
 import { upload, verifyMedia } from '../middleware/upload.js';
 import * as auth from '../controllers/auth.js';
+import * as bootstrap from '../controllers/bootstrap.js';
 import * as complaints from '../controllers/complaints.js';
 import * as admin from '../controllers/admin.js';
 import * as open311 from '../controllers/open311.js';
@@ -18,6 +19,7 @@ const r = Router();
 // shortcut: in-memory limits are per server instance; on Vercel add a Firewall rate-limit rule for /api/v1/auth/*
 const limit = (windowMs, max) => rateLimit({ windowMs, limit: env.isTest ? 10000 : max, standardHeaders: 'draft-8', legacyHeaders: false });
 const authLimiter = limit(15 * 60 * 1000, 20);
+const bootstrapLimiter = limit(15 * 60 * 1000, 5);
 const createLimiter = limit(60 * 60 * 1000, 30);
 const chatLimiter = limit(60 * 1000, 20);
 const staff = requireRole('officer', 'admin');
@@ -26,6 +28,7 @@ const adminOnly = requireRole('admin');
 // auth
 r.post('/auth/register', authLimiter, auth.register);
 r.post('/auth/login', authLimiter, auth.login);
+r.post('/auth/bootstrap-demo-officers', bootstrapLimiter, bootstrap.provisionDemoOfficers);
 r.post('/auth/logout', requireAuth, auth.logout);
 r.get('/auth/me', requireAuth, auth.me);
 

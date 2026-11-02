@@ -5,6 +5,7 @@ process.env.RISK_WEATHER = 'off';
 process.env.AUTO_ASSIGN = 'false'; // the lifecycle test walks the manual path; auto-routing has its own test
 process.env.OPEN311_API_KEYS = 'test-open311-key';
 process.env.CRON_SECRET = 'test-cron-secret';
+process.env.STAFF_BOOTSTRAP_TOKEN = 'test-only-bootstrap-token';
 process.env.WEBHOOK_URL = '';
 
 process.env.CORS_ORIGINS = 'https://allowed.example';

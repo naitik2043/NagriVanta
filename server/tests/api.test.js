@@ -58,6 +58,22 @@ test('register, login, me; bad credentials rejected; role cannot be self-assigne
   assert.equal((await request(app).get('/api/v1/auth/me')).status, 401);
 });
 
+test('demo department officers can be safely provisioned and log in', async () => {
+  const emails = ['san.officer@nagrivanta.local', 'jal.officer@nagrivanta.local', 'ele.officer@nagrivanta.local', 'drn.officer@nagrivanta.local',
+    'noida.san.officer@nagrivanta.local', 'noida.jal.officer@nagrivanta.local', 'noida.ele.officer@nagrivanta.local', 'noida.drn.officer@nagrivanta.local'];
+  const officers = emails.map((email, index) => ({ email, password: `temporary-officer-password-${String(index).padStart(4, '0')}` }));
+  const body = { officers };
+  assert.equal((await request(app).post('/api/v1/auth/bootstrap-demo-officers').send(body)).status, 403);
+  const result = await request(app).post('/api/v1/auth/bootstrap-demo-officers')
+    .set('X-Staff-Bootstrap-Token', 'test-only-bootstrap-token').send(body);
+  assert.equal(result.status, 200, JSON.stringify(result.body));
+  assert.equal(result.body.data.accounts.length, 8);
+  for (const officer of officers) {
+    const loginResponse = await request(app).post('/api/v1/auth/login').send(officer);
+    assert.equal(loginResponse.status, 200, JSON.stringify(loginResponse.body));
+  }
+});
+
 test('complaint idempotency replays the first result and rejects key reuse with changed data', async () => {
   const key = 'offline-report-test-0001';
   const submit = (title) => request(app).post('/api/v1/complaints').set(as('c1')).set('Idempotency-Key', key)
