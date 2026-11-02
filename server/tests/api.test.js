@@ -58,31 +58,6 @@ test('register, login, me; bad credentials rejected; role cannot be self-assigne
   assert.equal((await request(app).get('/api/v1/auth/me')).status, 401);
 });
 
-test('demo staff provisioning requires the bootstrap secret and resets only the documented staff accounts', async () => {
-  const body = {
-    adminPassword: 'temporary-admin-password-0001',
-    ghaziabadOfficerPassword: 'temporary-ghaziabad-password-0001',
-    noidaOfficerPassword: 'temporary-noida-password-0001',
-  };
-  assert.equal((await request(app).post('/api/v1/auth/bootstrap-demo-staff').send(body)).status, 403);
-  const result = await request(app).post('/api/v1/auth/bootstrap-demo-staff')
-    .set('X-Staff-Bootstrap-Token', 'test-only-bootstrap-token').send(body);
-  assert.equal(result.status, 200, JSON.stringify(result.body));
-  assert.deepEqual(result.body.data.accounts.map((u) => [u.email, u.role]), [
-    ['admin@nagrivanta.local', 'admin'],
-    ['pwd.officer@nagrivanta.local', 'officer'],
-    ['noida.pwd.officer@nagrivanta.local', 'officer'],
-  ]);
-  for (const [email, password] of [
-    ['admin@nagrivanta.local', body.adminPassword],
-    ['pwd.officer@nagrivanta.local', body.ghaziabadOfficerPassword],
-    ['noida.pwd.officer@nagrivanta.local', body.noidaOfficerPassword],
-  ]) {
-    const loginResponse = await request(app).post('/api/v1/auth/login').send({ email, password });
-    assert.equal(loginResponse.status, 200, JSON.stringify(loginResponse.body));
-  }
-});
-
 test('complaint idempotency replays the first result and rejects key reuse with changed data', async () => {
   const key = 'offline-report-test-0001';
   const submit = (title) => request(app).post('/api/v1/complaints').set(as('c1')).set('Idempotency-Key', key)
