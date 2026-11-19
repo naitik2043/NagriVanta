@@ -1,272 +1,265 @@
 # NagriVanta
 
-**A civic issue reporting and resolution platform for residents and municipal teams.**
+<p align="center">
+  <img src="client/public/icon.svg" alt="NagriVanta logo" width="76" />
+</p>
 
-NagriVanta helps residents report local infrastructure and public-service issues, track progress, and share feedback. Municipal staff can review, classify, assign, and resolve reports through a role-based workflow. The current pilot focuses on **Ghaziabad and Noida, Uttar Pradesh**.
-
-> **AI recommends. Rules validate. People decide.**
->
-> Automated classification, priority suggestions, duplicate detection, and evidence checks assist the workflow. Authorised people remain responsible for operational decisions.
+<h3 align="center">From pothole to proof of fix.</h3>
 
 <p align="center">
-  <a href="https://nagrivanta-web-topaz.vercel.app/"><strong>Open Web App</strong></a> ·
-  <a href="https://nagrivanta-api-iota.vercel.app/api/docs"><strong>API Documentation</strong></a> ·
-  <a href="https://github.com/naitik2043/NagriVanta"><strong>Source Code</strong></a>
+  A civic issue reporting and resolution platform connecting residents with municipal teams.
+</p>
+
+<p align="center">
+  <a href="https://github.com/naitik2043/NagriVanta/actions/workflows/ci.yml">
+    <img src="https://github.com/naitik2043/NagriVanta/actions/workflows/ci.yml/badge.svg?branch=main" alt="NagriVanta CI" />
+  </a>
+  <a href="https://github.com/naitik2043/NagriVanta/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/naitik2043/NagriVanta" alt="MIT License" />
+  </a>
+  <img src="https://img.shields.io/badge/Node.js-20%2B-339933?logo=node.js&logoColor=white" alt="Node.js 20+" />
+  <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black" alt="React 19" />
+  <img src="https://img.shields.io/badge/MongoDB-Mongoose-47A248?logo=mongodb&logoColor=white" alt="MongoDB and Mongoose" />
+</p>
+
+<p align="center">
+  <a href="https://nagrivanta-web-topaz.vercel.app/"><strong>Live Web App</strong></a> ·
+  <a href="https://nagrivanta-api-iota.vercel.app/api/docs"><strong>API Docs</strong></a> ·
+  <a href="docs/DEMO_GUIDE.md"><strong>Demo Guide</strong></a> ·
+  <a href="docs/ARCHITECTURE.md"><strong>Architecture</strong></a>
 </p>
 
 ---
 
-## Contents
+## Overview
 
-- [Live demo](#live-demo)
-- [Demo access](#demo-access)
-- [Features](#features)
-- [How the system works](#how-the-system-works)
-- [Technology stack](#technology-stack)
-- [Project structure](#project-structure)
-- [Run the project locally](#run-the-project-locally)
-  - [Option A: Quick demo (recommended)](#option-a-quick-demo-recommended)
-  - [Option B: Persistent local development](#option-b-persistent-local-development)
-  - [Run the web client](#run-the-web-client)
-  - [Run the mobile app](#run-the-mobile-app)
-- [Demo walkthrough](#demo-walkthrough)
-- [API and health checks](#api-and-health-checks)
-- [Troubleshooting](#troubleshooting)
-- [Development checks](#development-checks)
-- [Security and data safety](#security-and-data-safety)
-- [Limitations and responsible use](#limitations-and-responsible-use)
-- [Contributing](#contributing)
+NagriVanta is an AI-assisted civic-tech platform for reporting, routing, tracking, and resolving everyday public-service issues. Residents can report potholes, garbage, water leaks, damaged streetlights, and blocked drains. Municipal teams can review incoming complaints, assign work to departments and officers, update case progress, and record resolution evidence.
 
-## Live demo
+The current pilot is configured for **Ghaziabad and Noida, Uttar Pradesh**.
 
-| Service | Link |
+> **AI recommends. Rules validate. People decide.**
+>
+> Classification, priority scoring, duplicate matching, and evidence checks support the workflow. Authorised staff remain responsible for decisions.
+
+## Product preview
+
+The screenshot below is from the NagriVanta web application.
+
+<p align="center">
+  <img src="docs/assets/nagrivanta-homepage.webp" alt="NagriVanta homepage showing the civic issue reporting landing page, map panel, navigation and risk alerts" width="100%" />
+</p>
+
+<p align="center">
+  <a href="https://nagrivanta-web-topaz.vercel.app/">Open the live application</a>
+</p>
+
+## Live demo and developer links
+
+| Resource | Link |
 | --- | --- |
-| Web application | [nagrivanta-web-topaz.vercel.app](https://nagrivanta-web-topaz.vercel.app/) |
-| Backend API | [nagrivanta-api-iota.vercel.app](https://nagrivanta-api-iota.vercel.app/) |
-| Swagger / API docs | [Open API documentation](https://nagrivanta-api-iota.vercel.app/api/docs) |
-| OpenAPI JSON | [OpenAPI specification](https://nagrivanta-api-iota.vercel.app/api/openapi.json) |
+| Web application | [NagriVanta Web](https://nagrivanta-web-topaz.vercel.app/) |
+| Backend API | [NagriVanta API](https://nagrivanta-api-iota.vercel.app/) |
+| Interactive Swagger docs | [API Documentation](https://nagrivanta-api-iota.vercel.app/api/docs) |
+| OpenAPI JSON | [API specification](https://nagrivanta-api-iota.vercel.app/api/openapi.json) |
+| Health endpoint | [API health](https://nagrivanta-api-iota.vercel.app/health) |
 | Open311 service catalogue | [Open311 services](https://nagrivanta-api-iota.vercel.app/open311/v2/services.json) |
-| Health check | [API health](https://nagrivanta-api-iota.vercel.app/health) |
 
-The web and mobile applications use the same backend API. Sign in through the common sign-in page; the application routes users according to their account role. There are no separate admin and officer login pages.
+These are the deployment URLs recorded for the project. Check the health endpoint and sign-in flow before a live presentation; a published URL does not guarantee current service or demo-account availability.
 
-**Demo availability note:** these are hosted deployment URLs, not a guarantee that every service or demo account is currently healthy. For a presentation where you need predictable sample data, use the local in-memory demo described below and verify the URLs before presenting.
+**Hosted demo accounts:** use credentials provided separately by the project maintainer or an authorised demo administrator. Production passwords are deliberately not published in this repository and may be rotated.
 
-NagriVanta is an independent civic-tech pilot. It is **not** an official government portal or an emergency-response service.
+**Local demo accounts:** the in-memory demo uses sample accounts and the disposable password `Demo@12345`. See [Local Setup](docs/LOCAL_SETUP.md#local-demo-accounts). These credentials do not work on the hosted production environment.
 
-## Demo access
+NagriVanta is an independent civic-tech pilot, **not an official government portal or an emergency-response service**.
 
-### Hosted demo
+## Key capabilities
 
-1. Open the [NagriVanta web app](https://nagrivanta-web-topaz.vercel.app/).
-2. Select **Sign in**.
-3. Use credentials supplied separately by the project maintainer or an authorised demo administrator.
-4. The same account can be used in the mobile app.
-
-The repository intentionally does **not** publish production staff passwords, temporary provisioning credentials, API keys, JWT secrets, MongoDB connection strings, or private deployment identifiers. Production demo accounts may be reset or rotated, so credentials from an old setup record should not be assumed to still work. If a hosted login fails, request an approved account reset from the maintainer; do not try local demo credentials against production.
-
-### Local demo accounts
-
-For the local in-memory demo only, the seed script creates these sample roles:
-
-| Role | Local demo email |
+| Capability | What it provides |
 | --- | --- |
-| Administrator | `admin@nagrivanta.local` |
-| Ghaziabad PWD officer | `pwd.officer@nagrivanta.local` |
-| Ghaziabad Sanitation officer | `san.officer@nagrivanta.local` |
-| Ghaziabad Water officer | `jal.officer@nagrivanta.local` |
-| Ghaziabad Electrical officer | `ele.officer@nagrivanta.local` |
-| Ghaziabad Drainage officer | `drn.officer@nagrivanta.local` |
-| Noida PWD officer | `noida.pwd.officer@nagrivanta.local` |
-| Noida Sanitation officer | `noida.san.officer@nagrivanta.local` |
-| Noida Water officer | `noida.jal.officer@nagrivanta.local` |
-| Noida Electrical officer | `noida.ele.officer@nagrivanta.local` |
-| Noida Drainage officer | `noida.drn.officer@nagrivanta.local` |
-| Citizen | `citizen1@nagrivanta.local` |
+| Resident reporting | Submit civic complaints with descriptions, location, photos, and short videos |
+| Multiple reporting channels | Web, mobile, voice-enabled input, AI assistant/chat, and Open311 integration |
+| AI-assisted triage | Local text classification, optional Gemini refinement, summaries, category and priority suggestions |
+| Explainable prioritisation | Rule-based priority factors such as safety risk, blocked access, health hazards, and community signals |
+| Smart department routing | Suggests the relevant city department and can assign to the least-loaded eligible officer |
+| Duplicate suggestions | Compares text, distance, category, and image similarity to highlight potentially related reports |
+| Role-based workflows | Separate permissions and work queues for citizens, officers, and administrators |
+| Case tracking | Reference IDs, status timeline, updates, notifications, and citizen feedback |
+| Resolution evidence | Supports after-photos and checks available image, timestamp, and location signals |
+| Auditability | Complaint history uses a SHA-256 hash chain with an integrity-check endpoint |
+| SLA monitoring | Department deadlines, overdue-case escalation, and scheduled retry/escalation job |
+| Maps and analytics | Map-based reporting, public scorecards, ward insights, and workload views |
+| Public data and integration | Privacy-limited tracking, aggregate open-data exports, and Open311 GeoReport v2 endpoints |
+| Accessible experience | English/Hindi interface, PWA support, and offline report queueing in supported clients |
 
-**Local demo password:** `Demo@12345` for the accounts created by the local seed script, unless `SEED_PASSWORD` is set in the local environment. This password is a public, disposable demo value; never reuse it for a hosted or shared account.
+AI classification and evidence checks are assistance signals, not a substitute for human review or proof of municipal completion.
 
-## Features
+## How it works
 
-### Resident experience
-- Register and sign in as a citizen.
-- Submit civic complaints with a description, category, location, and supporting photos or video.
-- View personal reports, reference IDs, status changes, and case history.
-- Explore nearby reports and provide feedback on resolved work.
-- Use location-aware reporting and supported offline draft/queue behaviour.
+### System architecture
 
-### Department and administrator workflow
-- Role-based access for citizens, department officers, and administrators.
-- Review reports and AI-assisted category and priority suggestions.
-- Assign cases to the appropriate department and officer.
-- Track service-level deadlines, overdue reports, and workload.
-- Update case status, add staff notes, and attach resolution evidence.
-- Inspect complaint history and integrity information.
+```mermaid
+flowchart TB
+  RES["Resident / Staff"] --> WEB["React Web App"]
+  RES --> MOB["Expo Mobile App"]
+  PARTNER["Open311 Partner"] --> API["Node.js + Express API"]
+  WEB --> API
+  MOB --> API
 
-### Public information and integrations
-- View aggregate public scorecards and risk information.
-- Access anonymised open-data exports and public complaint tracking.
-- Integrate through the Open311 GeoReport v2-compatible endpoints.
-- Use map-based views and analytical dashboards.
-
-### AI-assisted triage
-- Built-in local text classification supports English, Hindi, and common Hinglish descriptions.
-- Optional Google Gemini analysis can provide additional suggestions.
-- Rule-based logic remains available when Gemini is not configured or unavailable.
-- AI results are advisory and remain subject to staff review.
-
-## How the system works
-
-```text
-Resident (Web / Mobile)
-         |
-         v
-     Express API
-         |
-         +------ Authentication and role checks
-         |
-         +------ Validation and media handling
-         |
-         +------ AI / local classifier + rules
-         |
-         v
-       MongoDB
-         |
-         v
- Department / Admin workflow
-         |
-         v
- Status updates, history, notifications
-         |
-         v
- Resident tracking and feedback
+  API --> MW["Security, Auth, Validation"]
+  MW --> CTRL["Routes and Controllers"]
+  CTRL --> SVC["Domain Services"]
+  SVC --> DB[("MongoDB")]
+  SVC --> LOCAL["Local Classifier + Rules"]
+  SVC -. optional AI refinement .-> GEMINI["Google Gemini"]
+  SVC --> WF["Routing, SLA, History, Notifications"]
 ```
 
-At a high level, the React web client and Expo mobile client call the Express API. The API validates requests, applies authentication and role permissions, runs complaint and triage services, and persists application records through Mongoose in MongoDB.
+### Typical complaint lifecycle
+
+```text
+Resident submits a complaint
+           |
+           v
+Validation, media checks and location handling
+           |
+           v
+Complaint saved with a reference ID
+           |
+           v
+Local triage + explainable priority score
+           |
+           v
+Department suggestion / eligible officer assignment
+           |
+           v
+Admin review and officer processing
+           |
+           v
+In progress -> Resolved -> Closed
+           |
+           v
+Evidence, audit history and resident feedback
+```
+
+The exact state transitions depend on the current status and the user's role. For the detailed state machine and service responsibilities, see [System Architecture](docs/ARCHITECTURE.md).
 
 ## Technology stack
 
 | Layer | Technologies |
 | --- | --- |
-| Web client | React, Vite, Tailwind CSS |
-| Backend | Node.js, Express 5 |
+| Web frontend | React 19, Vite, Tailwind CSS |
+| Backend | Node.js 20+, Express 5 |
 | Database | MongoDB, Mongoose |
 | Mobile | Expo, React Native |
 | Authentication | JWT, bcryptjs |
-| Validation and security | Zod, Helmet, CORS, express-rate-limit |
-| AI | Built-in local classifier, optional Google Gemini |
+| Validation and API security | Zod, Helmet, CORS, express-rate-limit |
+| AI and classification | Local Naive Bayes classifier, deterministic rules, optional Google Gemini |
 | Maps and visualisation | Leaflet, React Leaflet, Recharts |
-| API documentation | OpenAPI, Swagger UI |
-| Hosting | Vercel |
+| API documentation | OpenAPI 3.1, Swagger UI |
 | Testing | Node.js test runner, Supertest, mongodb-memory-server |
+| Deployment | Vercel |
+| CI | GitHub Actions |
 
-## Project structure
+## Repository structure
 
 ```text
 NagriVanta/
-├── client/                 # React + Vite web application
+├── client/                     # React + Vite web application
+│   ├── public/                 # App icon, PWA manifest and service worker
+│   └── src/
+│       ├── components/         # Shared UI, maps, charts and assistant
+│       ├── context/            # Auth, preferences and theme contexts
+│       ├── hooks/              # Reusable hooks
+│       ├── pages/              # Web application pages
+│       └── services/           # API client and frontend services
+│
+├── mobile/                     # Expo / React Native app
+│   └── src/
+│       ├── app/                # Mobile screens and navigation
+│       ├── components/         # Reusable mobile UI
+│       └── lib/                # API, auth, preferences and offline outbox
+│
+├── server/                     # Express backend
+│   ├── api/                    # Vercel serverless entry
+│   ├── scripts/                # Demo, seed, evaluation and training scripts
 │   ├── src/
-│   │   ├── components/     # Reusable UI, maps, charts and shared components
-│   │   ├── context/        # Authentication, preferences and theme state
-│   │   ├── hooks/          # Reusable React hooks
-│   │   └── pages/          # Application pages
-│   └── .env.example
+│   │   ├── config/             # Environment, database, security and OpenAPI
+│   │   ├── controllers/        # HTTP handlers
+│   │   ├── middleware/         # Auth, errors and media uploads
+│   │   ├── models/             # Mongoose models
+│   │   ├── routes/             # API route definitions
+│   │   ├── services/           # Business logic, AI, routing and workflow
+│   │   └── validators/         # Zod request schemas
+│   └── tests/                  # API, unit and security tests
 │
-├── mobile/                 # Expo / React Native application
-│   ├── app/                # Mobile screens and navigation
-│   └── .env.example
-│
-├── server/                 # Express API
-│   ├── api/                # Vercel serverless entry
-│   ├── scripts/            # Demo, seed, evaluation and training scripts
-│   ├── src/
-│   │   ├── config/         # Environment, database, security and OpenAPI setup
-│   │   ├── controllers/    # HTTP request handlers
-│   │   ├── middleware/     # Authentication, errors and uploads
-│   │   ├── models/         # Mongoose models
-│   │   ├── routes/         # API route definitions
-│   │   ├── services/       # Business logic, AI, triage and workflow
-│   │   └── validators/     # Request schemas
-│   └── tests/              # API, unit and security tests
-│
-├── data/                   # Bundled synthetic/evaluation datasets
-├── docs/                   # Project documentation
-└── .github/workflows/      # CI workflow
+├── data/                       # Synthetic and evaluation datasets
+├── docs/
+│   ├── assets/                 # README product screenshots
+│   ├── ARCHITECTURE.md         # Backend and system design
+│   ├── API_DOCUMENTATION.md    # Route and API reference
+│   ├── LOCAL_SETUP.md          # Detailed local setup and troubleshooting
+│   ├── DEMO_GUIDE.md           # End-to-end presentation guide
+│   ├── DEPLOYMENT.md           # Vercel deployment instructions
+│   └── NagriVanta-User-Guide.pdf
+└── .github/workflows/          # CI workflow
 ```
 
-## Run the project locally
+## Run locally
 
-### Requirements
+### Prerequisites
 
-- **Node.js 20 or newer** (Node.js 22 is used in CI).
-- npm (included with Node.js).
-- Git.
-- For persistent development: a local MongoDB instance or MongoDB Atlas database.
-- For mobile testing: Expo Go or an Android/iOS simulator.
+- Node.js **20 or newer** (CI currently uses Node.js 22).
+- npm and Git.
+- Internet access for package installation and the first in-memory MongoDB binary download.
+- MongoDB Community Server or Atlas only for persistent local development.
 
-First clone the repository:
+### Recommended: zero-setup local demo
+
+The backend provides a dedicated demo command. It starts a temporary in-memory MongoDB instance, creates sample departments, users and complaints, then starts the Express API. No MongoDB installation, Atlas account, or Gemini key is needed for this mode.
+
+**Terminal 1 — Backend**
 
 ```bash
 git clone https://github.com/naitik2043/NagriVanta.git
-cd NagriVanta
-```
-
-### Option A: Quick demo (recommended)
-
-This is the easiest way to demonstrate NagriVanta on a fresh machine. It starts a temporary, in-memory MongoDB instance, seeds sample records, and launches the API. **No MongoDB installation, Atlas account, or Gemini API key is required for this demo mode.**
-
-**Terminal 1 — Start the backend demo**
-
-```bash
-cd server
+cd NagriVanta/server
 npm install
 npm run demo
 ```
 
-On the first run, `mongodb-memory-server` may need to download a MongoDB binary. Allow that download and ensure the machine has internet access. Keep this terminal open while using the application.
+Keep this terminal running. On the first launch, `mongodb-memory-server` may download a MongoDB binary.
 
-The demo data is temporary and is lost when the process stops. Restarting `npm run demo` creates a fresh demo dataset.
-
-**Terminal 2 — Start the web client**
+**Terminal 2 — Web client**
 
 ```bash
-cd client
+cd NagriVanta/client
 npm install
 npm run dev
 ```
 
-Open the local URL printed by Vite (normally [http://localhost:5173](http://localhost:5173/)).
+Open [http://localhost:5173](http://localhost:5173/).
 
-**Sign in to the local demo**
+**Local demo login**
 
-Use one of the local demo emails in the [local demo accounts](#local-demo-accounts) table and password `Demo@12345`. The development sign-in screen also shows the local demo account hints.
+```text
+Admin:    admin@nagrivanta.local
+Citizen:  citizen1@nagrivanta.local
+Password: Demo@12345
+```
 
-> **Important:** Run `npm run demo` from the `server` directory. Do not run `npm run seed` for the quick demo. The in-memory demo is designed to avoid modifying a persistent database.
+Additional department officer accounts are listed in the [Local Setup guide](docs/LOCAL_SETUP.md#local-demo-accounts).
 
-### Option B: Persistent local development
+> **Demo data is temporary.** Stopping the backend removes the in-memory database. Restarting `npm run demo` creates a fresh dataset. Do not run the persistent seed script against production or a shared database.
 
-Use this option when you need data to remain available after restarting the server.
+### Persistent local development
 
-**1. Configure the backend**
+For data that should survive server restarts, configure MongoDB and the backend environment file:
 
 ```bash
 cd server
 npm install
 ```
 
-Create a local environment file by copying the example:
-
-**Windows PowerShell**
-```powershell
-Copy-Item .env.example .env
-```
-
-**macOS / Linux**
-```bash
-cp .env.example .env
-```
-
-Edit `server/.env` and set at least:
+Copy `server/.env.example` to `server/.env`, then configure at least:
 
 ```env
 PORT=5000
@@ -276,139 +269,47 @@ JWT_SECRET=replace-with-a-long-random-string
 CORS_ORIGINS=http://localhost:5173,http://localhost:8081
 ```
 
-Generate a strong local JWT secret rather than using the placeholder:
-
-```bash
-node -e "console.log(require('node:crypto').randomBytes(48).toString('hex'))"
-```
-
-Make sure MongoDB is running and that `MONGODB_URI` points to the database you intend to use.
-
-**2. Create local sample data (optional)**
-
-Only when the target database is a disposable local development database:
-
-```bash
-npm run seed
-```
-
-The seed script deletes the NagriVanta collections in the database specified by `MONGODB_URI` before inserting sample users, departments, complaints, and history. **Never run it against production, a shared database, or any database containing data you need to keep.**
-
-For a shared test database, set a private `SEED_PASSWORD` in `server/.env` before seeding and share it only with authorised testers.
-
-**3. Start the backend**
+Then start the backend:
 
 ```bash
 npm run dev
 ```
 
-The API listens on [http://localhost:5000](http://localhost:5000).
+See [Local Development Setup](docs/LOCAL_SETUP.md) for Windows/macOS/Linux commands, mobile networking, optional Gemini configuration, and troubleshooting.
 
-### Run the web client
+## Backend API overview
 
-The Vite development server proxies `/api`, `/uploads`, and `/health` to the backend at `http://localhost:5000`.
+The application API is mounted under `/api/v1`.
 
-In a new terminal:
-
-```bash
-cd client
-npm install
-npm run dev
-```
-
-Open [http://localhost:5173](http://localhost:5173).
-
-For a different API host, copy `client/.env.example` to `client/.env` and set:
-
-```env
-VITE_API_URL=https://your-api-host
-```
-
-Use the deployed API URL only when you intend to use the hosted backend; local demo accounts exist only in the local demo database.
-
-### Run the mobile app
-
-Start the API first. Then:
-
-```bash
-cd mobile
-npm install
-```
-
-Copy `mobile/.env.example` to `mobile/.env` and set `EXPO_PUBLIC_API_URL`.
-
-Examples:
-
-| Where the mobile app runs | API URL |
+| Area | Example endpoints |
 | --- | --- |
-| Android emulator | `http://10.0.2.2:5000` |
-| iOS simulator / Expo web | `http://localhost:5000` |
-| Physical phone on the same Wi-Fi | `http://YOUR_COMPUTER_LAN_IP:5000` |
+| Authentication | `POST /auth/register`, `POST /auth/login`, `GET /auth/me` |
+| Public information | `GET /public/scorecard`, `GET /public/risk-alerts`, `GET /public/track/:ref` |
+| Profile | `GET /profile`, `PATCH /profile`, `POST /profile/password` |
+| Complaints | `POST /complaints`, `GET /complaints/mine`, `GET /complaints/:id` |
+| Workflow | `PATCH /complaints/:id/status`, `PATCH /complaints/:id/assign`, `POST /complaints/:id/notes` |
+| Assistant | `POST /assistant/chat` |
+| Administration | `GET /admin/analytics`, `GET /admin/workload`, `POST /admin/users` |
+| Notifications | `GET /notifications`, `PATCH /notifications/:id/read` |
 
-For a physical phone, use your computer's LAN IPv4 address (Windows: `ipconfig`; macOS/Linux: `hostname -I`). Do not use `localhost` from a physical phone: it points to the phone itself. Ensure both devices are on the same network and your firewall allows the development port.
+Open311 GeoReport v2-compatible endpoints are mounted at `/open311/v2`.
 
-Start Expo:
+For methods, access requirements, payload examples, and the complete route catalogue, see [API Documentation](docs/API_DOCUMENTATION.md) or open the [interactive Swagger UI](https://nagrivanta-api-iota.vercel.app/api/docs).
 
-```bash
-npx expo start
-```
+## Documentation
 
-Use the QR code or Expo development tools to open the app on a device or simulator.
-
-## Demo walkthrough
-
-For a clear end-to-end presentation, follow this sequence:
-
-1. **Open the application:** show the resident landing page and explain the civic issue reporting problem it addresses.
-2. **Resident account:** sign in using the local citizen demo account, or register a new local citizen account.
-3. **Submit a complaint:** enter a realistic issue description, choose the location, and attach sample evidence if available.
-4. **Show triage:** explain how the local classifier/rules suggest a category and priority; Gemini is optional.
-5. **Administrator review:** sign out and sign in as the local admin. Open the staff queue and review/assign a complaint.
-6. **Officer workflow:** sign in as the relevant department officer, open the assigned complaint, and update its status with an appropriate note/evidence.
-7. **Resident tracking:** return to the citizen account and show the updated report timeline and status.
-8. **Analytics and public views:** demonstrate aggregate scorecards, maps, and public tracking where available.
-
-For a predictable walkthrough, use the seeded local demo data. Do not demonstrate with real residents' private information.
-
-## API and health checks
-
-When the local backend is running, these routes are useful for verification:
-
-| Endpoint | Purpose |
+| Guide | Description |
 | --- | --- |
-| `GET /health` | Basic API status, database status, and AI mode |
-| `GET /health/live` | Process liveness check |
-| `GET /health/ready` | Readiness check including a MongoDB ping |
-| `GET /api/docs` | Interactive Swagger documentation |
-| `GET /api/openapi.json` | OpenAPI specification |
-| `GET /open311/v2/services.json` | Open311 service catalogue |
+| [System Architecture](docs/ARCHITECTURE.md) | Application boundaries, authentication, AI triage, routing, status workflow, audit and data models |
+| [API Documentation](docs/API_DOCUMENTATION.md) | Endpoints, roles, request examples, responses and errors |
+| [Local Setup](docs/LOCAL_SETUP.md) | Full setup for quick demo, persistent backend, web, mobile and troubleshooting |
+| [Demo Walkthrough](docs/DEMO_GUIDE.md) | Step-by-step resident, admin and officer presentation flow |
+| [Deployment Guide](docs/DEPLOYMENT.md) | Vercel project configuration, environment variables and production verification |
+| [User Guide](docs/NagriVanta-User-Guide.pdf) | User-facing application guidance |
 
-Local examples:
+## Development and quality checks
 
-- [http://localhost:5000/health](http://localhost:5000/health)
-- [http://localhost:5000/health/ready](http://localhost:5000/health/ready)
-- [http://localhost:5000/api/docs](http://localhost:5000/api/docs)
-
-For `/health/ready`, expect HTTP 200 and `db: "up"` when the database is connected. A database-down response means the backend is not ready for normal database-backed requests.
-
-## Troubleshooting
-
-| Problem | What to check |
-| --- | --- |
-| Web page opens but API requests fail | Make sure the backend is running on port 5000. Check `/health` and the Vite proxy configuration. |
-| Backend exits with `MONGODB_URI is not set` | Use `npm run demo`, or configure `MONGODB_URI` in `server/.env` for persistent mode. |
-| Backend reports a JWT configuration error | Set a non-placeholder `JWT_SECRET` in `server/.env`. |
-| MongoDB connection times out | Check that MongoDB is running, the URI is correct, and Atlas network access allows your IP. |
-| Local login fails | Confirm that `npm run demo` is still running, or seed the intended disposable local database. Use the local demo email and password exactly as documented. |
-| Hosted staff login fails | Confirm the production URL and email spelling; ask the maintainer to reset/rotate the account. Local demo credentials do not authenticate against production. |
-| Gemini is unavailable | This is optional. Leave `GEMINI_API_KEY` empty and use the built-in local classifier/rules fallback. |
-| Physical phone cannot reach the API | Set `EXPO_PUBLIC_API_URL` to the computer's LAN IP, not `localhost`; check Wi-Fi and firewall settings. |
-| Port 5000 or 5173 is already in use | Stop the process using that port or update the relevant local port/proxy configuration. |
-| First demo launch is slow or fails while starting MongoDB memory server | Check internet connectivity and allow the MongoDB binary download; retry after the download completes. |
-
-## Development checks
-
-Run backend tests:
+Backend tests:
 
 ```bash
 cd server
@@ -416,7 +317,7 @@ npm ci
 npm test
 ```
 
-Lint and build the web application:
+Frontend lint and production build:
 
 ```bash
 cd client
@@ -425,7 +326,7 @@ npm run lint
 npm run build
 ```
 
-Export the mobile application for web:
+Mobile web export:
 
 ```bash
 cd mobile
@@ -433,50 +334,24 @@ npm ci
 npx expo export --platform web
 ```
 
-The repository's GitHub Actions workflow runs frontend lint/build, backend tests, and mobile web export on pushes and pull requests targeting `main`.
+The GitHub Actions workflow runs frontend lint/build, backend tests, and mobile web export on pushes and pull requests targeting `main`. Check the live [CI workflow](https://github.com/naitik2043/NagriVanta/actions/workflows/ci.yml) for its current status.
 
-## Security and data safety
+## Security and responsible use
 
-- Never commit `.env` files, API keys, JWT/cron secrets, MongoDB URIs/passwords, or production credentials.
-- Keep hosted secrets in the hosting provider's environment-variable settings and local secrets in ignored local environment files.
-- Rotate any credential that has been exposed in a chat, log, screenshot, commit, or public location.
-- Production staff passwords and private deployment/team identifiers are intentionally excluded from this README.
-- Do not publish resident records, private complaint data, access tokens, deployment logs, or screenshots containing confidential information.
-- **Never run `npm run seed` against production or a shared database.** It deletes the application's existing collections before inserting demo data.
+- Keep real credentials in ignored local environment files or the hosting provider's secret store.
+- Never commit API keys, JWT/cron secrets, MongoDB connection strings/passwords, hosted staff passwords, private preview URLs, or deployment identifiers.
+- Rotate any credential exposed in chat, logs, screenshots, commits, or other public locations.
+- **Never run `npm run seed` against production or a shared database.** It deletes the NagriVanta collections in the configured database before inserting sample data.
 - Use synthetic or explicitly authorised data for demos and tests.
-
-### Environment variables
-
-The backend reads its configuration from `server/.env`. The variable names and safe example defaults are documented in [server/.env.example](server/.env.example).
-
-| Variable | Purpose |
-| --- | --- |
-| `MONGODB_URI` | MongoDB connection string (required for persistent backend mode) |
-| `JWT_SECRET` | Secret used to sign authentication tokens |
-| `CRON_SECRET` | Protects the scheduled SLA job endpoint |
-| `GEMINI_API_KEY` | Optional Gemini integration key |
-| `SEED_PASSWORD` | Optional password override for accounts created by the seed script |
-| `CORS_ORIGINS` | Allowed browser origins |
-| `PORT` | Local API port |
-
-Do not put real values in this README or in example files. The web client uses `VITE_API_URL`; the mobile app uses `EXPO_PUBLIC_API_URL`.
-
-## Limitations and responsible use
-
-- NagriVanta is an independent pilot and is not an official municipal/government service.
-- It must not be used to report emergencies.
-- AI suggestions and evidence checks can be wrong; staff must review them with the available evidence.
-- Public tracking and aggregate views are designed to avoid exposing reporter contact details. Avoid entering unnecessary personal information.
-- Uploaded photos and videos may contain sensitive data; share only what is needed to explain the issue.
+- Public tracking and aggregate data views are designed to avoid exposing reporter contact details. Do not submit unnecessary personal information.
+- AI suggestions and evidence checks can be wrong and must be reviewed by authorised staff.
+- Do not use NagriVanta to report emergency incidents. Contact the appropriate local emergency service.
 
 ## Contributing
 
-Contributions are welcome. Before opening a pull request:
+Contributions are welcome. Please open an issue or pull request with context about the proposed change, keep changes focused, add or update tests where appropriate, and run the relevant checks before submitting.
 
-1. Describe the issue and the proposed change.
-2. Keep changes focused and include tests where appropriate.
-3. Run the relevant lint, build, and test commands.
-4. Do not include private resident information, credentials, database connection strings, or production account details in issues, commits, screenshots, or pull requests.
+Do not include private resident information, production credentials, database dumps, or confidential operational logs in issues, commits, screenshots, or pull requests.
 
 ---
 
