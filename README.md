@@ -66,9 +66,28 @@ The screenshot below is from the NagriVanta web application.
 
 These are the deployment URLs recorded for the project. Check the health endpoint and sign-in flow before a live presentation; a published URL does not guarantee current service or demo-account availability.
 
-**Hosted demo accounts:** use credentials provided separately by the project maintainer or an authorised demo administrator. Production passwords are deliberately not published in this repository and may be rotated.
+**Hosted demo login:** [Open the sign-in page](https://nagrivanta-web-topaz.vercel.app/login). The production environment has separately provisioned staff accounts. Their temporary passwords are not published here because they are private, may have been rotated, and must be distributed only to authorised demo participants. If a hosted login fails, request an admin-approved password reset. The local demo password below does not work on production.
 
-**Local demo accounts:** the in-memory demo uses sample accounts and the disposable password `Demo@12345`. See [Local Setup](docs/LOCAL_SETUP.md#local-demo-accounts). These credentials do not work on the hosted production environment.
+### Local demo IDs and password
+
+Run the backend using `npm run demo` first. The local in-memory seed creates the following sample accounts. **The password for every account in this table is `Demo@12345`.**
+
+| Role | Local demo login email | Password |
+| --- | --- | --- |
+| Administrator | `admin@nagrivanta.local` | `Demo@12345` |
+| Ghaziabad — PWD Officer | `pwd.officer@nagrivanta.local` | `Demo@12345` |
+| Ghaziabad — Sanitation Officer | `san.officer@nagrivanta.local` | `Demo@12345` |
+| Ghaziabad — Water Officer | `jal.officer@nagrivanta.local` | `Demo@12345` |
+| Ghaziabad — Electrical Officer | `ele.officer@nagrivanta.local` | `Demo@12345` |
+| Ghaziabad — Drainage Officer | `drn.officer@nagrivanta.local` | `Demo@12345` |
+| Noida — PWD Officer | `noida.pwd.officer@nagrivanta.local` | `Demo@12345` |
+| Noida — Sanitation Officer | `noida.san.officer@nagrivanta.local` | `Demo@12345` |
+| Noida — Water Officer | `noida.jal.officer@nagrivanta.local` | `Demo@12345` |
+| Noida — Electrical Officer | `noida.ele.officer@nagrivanta.local` | `Demo@12345` |
+| Noida — Drainage Officer | `noida.drn.officer@nagrivanta.local` | `Demo@12345` |
+| Citizen | `citizen1@nagrivanta.local` | `Demo@12345` |
+
+These are disposable **local-only** accounts backed by the in-memory demo database. They are recreated when the demo server starts and are not production credentials.
 
 NagriVanta is an independent civic-tech pilot, **not an official government portal or an emergency-response service**.
 
